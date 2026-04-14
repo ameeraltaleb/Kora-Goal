@@ -64,47 +64,62 @@ export default async function Home() {
               <span className={styles.liveCount}>{liveMatches.length} مباراة</span>
             </div>
 
-            <div className={styles.liveCardsGrid}>
-              {liveMatches.map((match: any) => (
-                <Link href={`/match/${match.id}`} key={match.id} className={styles.liveCard} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <div className={styles.liveCardHeader}>
-                    <span className={styles.liveBadge}>
-                      <span className={styles.liveDot}></span>
-                      LIVE
-                    </span>
-                    <span className={styles.liveTournament}>{match.tournament || 'مباراة'}</span>
-                  </div>
+            {Object.entries(
+              liveMatches.reduce((acc: any, m: any) => {
+                const key = m.tournament || 'مباريات مباشرة';
+                if (!acc[key]) acc[key] = { logo: m.league_logo, items: [] };
+                acc[key].items.push(m);
+                return acc;
+              }, {})
+            ).map(([tournament, group]: any) => (
+              <div key={tournament} className={styles.tournamentLiveGroup}>
+                <div className={styles.tournamentLiveHeader}>
+                  {group.logo && <Image src={group.logo} alt="" width={20} height={20} unoptimized />}
+                  <span>{tournament}</span>
+                </div>
+                <div className={styles.liveCardsGrid}>
+                  {group.items.map((match: any) => (
+                    <Link href={`/match/${match.id}`} key={match.id} className={styles.liveCard} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <div className={styles.liveCardHeader}>
+                        <span className={styles.liveBadge}>
+                          <span className={styles.liveDot}></span>
+                          LIVE
+                        </span>
+                        <span className={styles.liveStatusText}>{match.status === 'live' ? 'جارية الآن' : match.status}</span>
+                      </div>
 
-                  <div className={styles.liveCardBody}>
-                    <div className={styles.liveTeam}>
-                      {match.home_logo && (
-                        <div className={styles.liveTeamLogo}>
-                          <Image src={match.home_logo} alt={match.home_team} width={40} height={40} style={{ objectFit: 'contain' }} unoptimized />
+                      <div className={styles.liveCardBody}>
+                        <div className={styles.liveTeam}>
+                          {match.home_logo && (
+                            <div className={styles.liveTeamLogo}>
+                              <Image src={match.home_logo} alt={match.home_team} width={40} height={40} style={{ objectFit: 'contain' }} unoptimized />
+                            </div>
+                          )}
+                          <span className={styles.teamName}>{match.home_team}</span>
                         </div>
-                      )}
-                      <span className={styles.teamName}>{match.home_team}</span>
-                    </div>
 
-                    <div className={styles.liveScoreSection}>
-                      <div className={styles.liveScore}>{match.score || '0 - 0'}</div>
-                    </div>
-
-                    <div className={styles.liveTeam}>
-                      <span className={styles.teamName}>{match.away_team}</span>
-                      {match.away_logo && (
-                        <div className={styles.liveTeamLogo}>
-                          <Image src={match.away_logo} alt={match.away_team} width={40} height={40} style={{ objectFit: 'contain' }} unoptimized />
+                        <div className={styles.liveScoreSection}>
+                          <div className={styles.liveScore}>{match.score || '0 - 0'}</div>
                         </div>
-                      )}
-                    </div>
-                  </div>
 
-                  <div className={styles.liveCardFooter}>
-                    <span className={styles.watchBtn}>▶ شاهد البث المباشر</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                        <div className={styles.liveTeam}>
+                          <span className={styles.teamName}>{match.away_team}</span>
+                          {match.away_logo && (
+                            <div className={styles.liveTeamLogo}>
+                              <Image src={match.away_logo} alt={match.away_team} width={40} height={40} style={{ objectFit: 'contain' }} unoptimized />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className={styles.liveCardFooter}>
+                        <span className={styles.watchBtn}>▶ شاهد البث المباشر</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
           </section>
         )}
 

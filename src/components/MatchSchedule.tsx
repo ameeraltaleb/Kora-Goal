@@ -65,8 +65,25 @@ export default function MatchSchedule() {
           <p>لا توجد مباريات {activeTab === 'today' ? 'اليوم' : activeTab === 'tomorrow' ? 'غداً' : 'أمس'}</p>
         </div>
       ) : (
-        matches.map((match) => (
-          <MatchCard key={match.id} match={match} />
+        Object.entries(
+          matches.reduce((acc: any, m: any) => {
+            const key = m.tournament || 'مباريات أخرى';
+            if (!acc[key]) acc[key] = { name: key, logo: m.league_logo, items: [] };
+            acc[key].items.push(m);
+            return acc;
+          }, {})
+        ).map(([key, group]: any) => (
+          <div key={key} className={styles.tournamentGroup}>
+            <div className={styles.tournamentHeader}>
+              {group.logo && <Image src={group.logo} alt="" width={22} height={22} unoptimized />}
+              <h3 className={styles.tournamentName}>{group.name}</h3>
+            </div>
+            <div className={styles.matchesInGroup}>
+              {group.items.map((match: any) => (
+                <MatchCard key={match.id} match={match} />
+              ))}
+            </div>
+          </div>
         ))
       )}
     </div>

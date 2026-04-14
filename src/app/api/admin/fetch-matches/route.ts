@@ -93,6 +93,8 @@ export async function GET() {
             status,
             score,
             match_time: match.utcDate,
+            league_logo: match.competition?.emblem || null,
+            league_code: match.competition?.code || null,
           }).eq('external_id', externalId);
         } else {
           await supabase.from('matches').insert({
@@ -104,6 +106,8 @@ export async function GET() {
             status,
             score,
             tournament: LEAGUE_NAMES[match.competition?.code || ''] || match.competition?.name || '',
+            league_logo: match.competition?.emblem || null,
+            league_code: match.competition?.code || null,
             servers: generateDefaultServers(homeTeam, awayTeam),
             external_id: externalId,
           });

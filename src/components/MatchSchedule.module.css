@@ -39,6 +39,38 @@
   color: #FFFFFF;
 }
 
+.tournamentGroup {
+  margin-bottom: 24px;
+}
+
+.tournamentHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-card);
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  backdrop-filter: blur(8px);
+}
+
+.tournamentName {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.matchesInGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .loadingState {
   text-align: center;
   padding: 40px 20px;
