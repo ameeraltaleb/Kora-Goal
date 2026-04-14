@@ -67,7 +67,7 @@ export async function GET(request: Request) {
         const itemsToProcess = feed.items.slice(0, 5);
 
         for (const item of itemsToProcess) {
-          const title = item.title?.substring(0, 150) || '';
+          let title = item.title?.substring(0, 150) || '';
 
           if (!title) continue;
 
@@ -84,7 +84,9 @@ export async function GET(request: Request) {
           const rawText = `${item.title}\n\n${item.contentSnippet || item.content || ''}`;
           let summary = '';
           try {
-            summary = await summarizeNews(rawText);
+            const aiData = await summarizeNews(rawText);
+            if (aiData.title) title = aiData.title;
+            summary = aiData.content || '';
           } catch {
             summary = item.contentSnippet?.substring(0, 200) || '';
           }
