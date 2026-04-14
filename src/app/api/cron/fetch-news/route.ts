@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import Parser from 'rss-parser';
 import { summarizeNews } from '@/lib/gemini';
 import { supabase } from '@/lib/supabase';
+import { submitToIndexNow } from '@/lib/indexnow';
 
 // User-Agent rotation to avoid blocking
 const USER_AGENTS = [
@@ -50,6 +51,7 @@ export async function GET(request: Request) {
     let totalProcessed = 0;
     const errors: string[] = [];
     const successSources: string[] = [];
+    const newSlugs: string[] = [];
 
     for (const source of RSS_SOURCES) {
       try {
@@ -118,6 +120,7 @@ export async function GET(request: Request) {
               created_at: new Date().toISOString(),
             });
 
+          newSlugs.push(slug);
           totalProcessed++;
 
           // Delay to avoid Gemini API rate limit (429) Free Tier
@@ -128,6 +131,11 @@ export async function GET(request: Request) {
       } catch (sourceError: any) {
         errors.push(`${source.name}: ${sourceError.message}`);
       }
+    }
+
+    if (newSlugs.length > 0) {
+      const urls = newSlugs.map(slug => `https://kora-goal.vercel.app/news/${slug}`);
+      await submitToIndexNow(urls);
     }
 
     return NextResponse.json({

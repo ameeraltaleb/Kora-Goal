@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { summarizeNews } from '@/lib/gemini';
 import { supabase } from '@/lib/supabase';
 import { slugify } from '@/lib/utils';
+import { submitToIndexNow } from '@/lib/indexnow';
 
 export async function POST(request: Request) {
   try {
@@ -36,6 +37,9 @@ export async function POST(request: Request) {
       .select();
 
     if (error) throw error;
+
+    // Send to Bing/Google via IndexNow
+    await submitToIndexNow([`https://kora-goal.vercel.app/news/${slug}`]);
 
     return NextResponse.json({ success: true, data });
   } catch (error: any) {
