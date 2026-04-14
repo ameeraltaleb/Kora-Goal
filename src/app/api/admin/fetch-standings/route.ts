@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
 const API_BASE = 'https://api.football-data.org/v4';
-const API_KEY = process.env.FOOTBALL_API_KEY || '';
+const API_KEY = (process.env.FOOTBALL_API_KEY || '').trim();
 
 const LEAGUES = [
   { code: 'PL', name: 'الدوري الإنجليزي' },

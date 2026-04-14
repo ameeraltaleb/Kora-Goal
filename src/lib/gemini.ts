@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const genAI = new GoogleGenerativeAI((process.env.GEMINI_API_KEY || "").trim());
 const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
 // 1. Queue to Limit Concurrency (Throttling)

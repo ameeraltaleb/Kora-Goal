@@ -10,6 +10,8 @@ const RSS_SOURCES = [
   { url: 'https://news.google.com/rss/search?q=كرة+قدم&hl=ar&gl=SA&ceid=SA:ar', name: 'Google News Arabic Football' },
 ];
 
+const GEMINI_KEY = (process.env.GEMINI_API_KEY || '').trim(); // Sanitized
+
 // User-Agent rotation
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
