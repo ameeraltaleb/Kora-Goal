@@ -82,6 +82,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl" className={cairo.variable}>
+      <head>
+        <meta name="google-site-verification" content="lQabIv7YQLLRFkK4JgroWCZ13gnDib3ALmxpBw0Ld4k" />
+      </head>
       <body className={cairo.className}>
         {/* Skip Navigation for Accessibility */}
         <a href="#main-content" className="skip-to-content">تخطي للمحتوى الرئيسي</a>
