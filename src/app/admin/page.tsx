@@ -124,9 +124,20 @@ export default function AdminDashboard() {
       <main className={styles.mainContent}>
         <header className={styles.topHeader}>
           <h1>لوحة التحكم المتقدمة</h1>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <SyncButton />
-            <button onClick={fetchDashboardData} className={styles.refreshBtn} title="تحديث">↻</button>
+          <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.05)', padding: '5px 10px', borderRadius: '8px' }}>
+              <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>الأخبار:</span>
+              <SyncButton type="news" />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.05)', padding: '5px 10px', borderRadius: '8px' }}>
+              <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>المباريات:</span>
+              <SyncButton type="matches" />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.05)', padding: '5px 10px', borderRadius: '8px' }}>
+              <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>الترتيب:</span>
+              <SyncButton type="standings" />
+            </div>
+            <button onClick={fetchDashboardData} className={styles.refreshBtn} title="تحديث الإحصائيات">↻</button>
           </div>
         </header>
 
