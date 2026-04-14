@@ -63,9 +63,25 @@ export default async function LiveMatchesPage() {
       </header>
 
       {displayMatches.length > 0 ? (
-        <div className={styles.matchesGrid}>
-          {displayMatches.map((match) => (
-            <MatchCard key={match.id} match={match} />
+        <div className={styles.matchesList}>
+          {Object.entries(
+            displayMatches.reduce((acc: any, m: any) => {
+              const key = m.tournament || 'مباريات أخرى';
+              if (!acc[key]) acc[key] = { name: key, logo: m.league_logo, items: [] };
+              acc[key].items.push(m);
+              return acc;
+            }, {})
+          ).map(([key, group]: any) => (
+            <div key={key} className={styles.tournamentGroup}>
+              <div className={styles.tournamentHeader}>
+                <h3 className={styles.tournamentName}>{group.name}</h3>
+              </div>
+              <div className={styles.matchesInGroup}>
+                {group.items.map((match: any) => (
+                  <MatchCard key={match.id} match={match} />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       ) : (
