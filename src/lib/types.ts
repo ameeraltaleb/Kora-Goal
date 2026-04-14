@@ -13,6 +13,8 @@ export interface MatchData {
   status: 'live' | 'upcoming' | 'finished';
   score: string;
   tournament: string | null;
+  league_logo: string | null;
+  league_code: string | null;
   channel: string | null;
   commentator: string | null;
   servers: MatchServer[];
