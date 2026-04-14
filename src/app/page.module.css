@@ -245,7 +245,6 @@
 .posCell {
   color: var(--text-secondary);
   font-weight: 700;
-  font-family: var(--font-outfit);
 }
 
 .emptyMsg {
@@ -276,9 +275,9 @@
 }
 
 .newsCard:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   box-shadow: var(--shadow-hover);
-  border-color: var(--fb-blue-border);
+  border-color: var(--primary-accent);
 }
 
 .newsCardFeatured {

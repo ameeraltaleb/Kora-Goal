@@ -135,10 +135,11 @@ export default function VideoPlayer({ sources, onAutoSwitch }: VideoPlayerProps)
           isM3u8 ? (
             <video
               ref={videoRef}
-              className={styles.iframe} // Using same class for full width/height
+              className={styles.iframe}
               controls
               autoPlay
-              muted // initially muted to allow autoplay bypass in some browsers
+              muted
+              aria-label="مشغل البث المباشر"
             />
           ) : (
             <iframe
@@ -147,6 +148,7 @@ export default function VideoPlayer({ sources, onAutoSwitch }: VideoPlayerProps)
               className={styles.iframe}
               allowFullScreen
               onLoad={() => setIsLoading(false)}
+              title={`سيرفر البث: ${sources[currentIndex]?.label || ''}`}
             />
           )
         )}
@@ -160,6 +162,8 @@ export default function VideoPlayer({ sources, onAutoSwitch }: VideoPlayerProps)
               key={index}
               className={`${styles.serverBtn} ${currentIndex === index ? styles.active : ''}`}
               onClick={() => handleSwitch(index)}
+              aria-pressed={currentIndex === index}
+              aria-label={`سيرفر ${source.label}`}
             >
               {source.label}
             </button>

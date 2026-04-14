@@ -1,0 +1,140 @@
+.container {
+  min-height: 100vh;
+  background-color: var(--bg-main);
+}
+
+.content {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+  font-size: 0.95rem;
+}
+
+.successBox {
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
+}
+
+.successIcon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.successTitle {
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--text-primary);
+}
+
+.successMessage {
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fieldLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 14px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: var(--transition);
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: var(--primary-accent);
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.submitBtn {
+  padding: 16px;
+  background: var(--primary-accent);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+.submitBtn:hover {
+  background: #c0392b;
+  transform: translateY(-1px);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.errorText {
+  color: #e74c3c;
+  text-align: center;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 24px 16px 40px;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .input,
+  .textarea {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+
+  .submitBtn {
+    padding: 14px;
+  }
+}

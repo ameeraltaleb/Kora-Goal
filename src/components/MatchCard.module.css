@@ -179,13 +179,29 @@
 }
 
 @media (max-width: 480px) {
+  .card {
+    padding: 10px 16px;
+  }
+
   .matchMain {
     display: flex;
     flex-direction: column;
-    padding: 8px 0;
+    padding: 4px 0;
+    gap: 8px;
   }
   
-  .team { width: 100%; justify-content: space-between !important; }
-  .team:first-child { flex-direction: row; }
-  .team:last-child { flex-direction: row-reverse; }
+  .team {
+    width: 100%;
+    justify-content: space-between;
+    flex-direction: row;
+  }
+
+  .centerSection {
+    order: -1;
+  }
+
+  .scoreBox {
+    min-width: auto;
+    width: 100%;
+  }
 }

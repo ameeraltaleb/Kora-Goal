@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import NewsTicker from '@/components/NewsTicker';
+import Breadcrumb from '@/components/Breadcrumb';
 import styles from './page.module.css';
 import type { Metadata } from 'next';
 
@@ -78,11 +79,10 @@ export default async function NewsArticlePage({ params }: { params: { slug: stri
       <NewsTicker />
 
       <article className={styles.articleWrapper}>
-        <nav className={styles.breadcrumb}>
-          <Link href="/">الرئيسية</Link> &raquo;
-          <Link href="/news">الأخبار</Link> &raquo;
-          <span>تفاصيل الخبر</span>
-        </nav>
+        <Breadcrumb items={[
+          { label: 'الأخبار', href: '/news' },
+          { label: 'تفاصيل الخبر' },
+        ]} />
 
         <header className={styles.headerInfo}>
           <span className={styles.category}>{article.category || 'كرة قدم'}</span>

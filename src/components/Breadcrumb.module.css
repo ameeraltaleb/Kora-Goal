@@ -1,0 +1,42 @@
+.breadcrumb {
+  margin-bottom: 24px;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.separator {
+  margin: 0 10px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.link {
+  color: var(--primary-accent);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.link:hover {
+  color: #c0392b;
+  text-decoration: none;
+}
+
+.current {
+  color: var(--text-muted);
+  font-weight: 500;
+}

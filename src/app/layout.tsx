@@ -3,6 +3,7 @@ import { Cairo } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
 import { SportsSiteJsonLd } from "@/components/JsonLd";
 
 const cairo = Cairo({
@@ -79,11 +80,15 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={cairo.variable}>
       <body className={cairo.className}>
+        {/* Skip Navigation for Accessibility */}
+        <a href="#main-content" className="skip-to-content">تخطي للمحتوى الرئيسي</a>
+
         <Header />
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div id="main-content" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           {children}
         </div>
         <Footer />
+        <BackToTop />
 
         {/* Structured Data for SEO */}
         <SportsSiteJsonLd />

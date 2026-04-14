@@ -1,0 +1,79 @@
+.widgetCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+}
+
+.widgetCard:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.widgetHeader {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.widgetTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.widgetBody {
+  padding: 16px;
+}
+
+.miniTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.miniTable th {
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.miniTable td {
+  padding: 10px 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.miniTable tr:last-child td {
+  border-bottom: none;
+}
+
+.miniTable tr:hover {
+  background: var(--bg-card-hover);
+}
+
+.posCell {
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+.pointsCell {
+  color: var(--primary-accent);
+  font-weight: 700;
+}
+
+.emptyMsg {
+  text-align: center;
+  padding: 30px !important;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}

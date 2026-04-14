@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import NewsTicker from '@/components/NewsTicker';
+import Breadcrumb from '@/components/Breadcrumb';
 import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
 import type { Metadata } from 'next';
@@ -57,6 +58,7 @@ export default async function Standings({
       <NewsTicker />
 
       <div className={styles.content}>
+        <Breadcrumb items={[{ label: 'ترتيب الدوريات' }]} />
         <div className={styles.headerSection}>
           <h1 className={styles.title}>ترتيب الدوريات</h1>
           <div className={styles.tabs}>

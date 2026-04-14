@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
 import Link from 'next/link';
 import NewsTicker from '@/components/NewsTicker';
+import Breadcrumb from '@/components/Breadcrumb';
 import styles from './page.module.css';
 import type { Metadata } from 'next';
 
@@ -51,6 +52,7 @@ export default async function ScorersPage({
       <NewsTicker />
 
       <div className={styles.content}>
+        <Breadcrumb items={[{ label: 'هدافي الدوريات' }]} />
         <div className={styles.header}>
           <h1 className={styles.title}>🎯 هدافي الدوريات الكبرى</h1>
           <div className={styles.tabs}>

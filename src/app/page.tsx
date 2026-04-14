@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import MatchSchedule from '@/components/MatchSchedule';
 import MatchCard from '@/components/MatchCard';
 import NewsTicker from '@/components/NewsTicker';
+import MiniStandingsWidget from '@/components/MiniStandingsWidget';
 import styles from './page.module.css';
 import type { Metadata } from 'next';
 
@@ -21,42 +22,42 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
+const STANDINGS_LEAGUES = [
+  { code: 'PL', name: 'الدوري الإنجليزي' },
+  { code: 'PD', name: 'الدوري الإسباني' },
+  { code: 'SA', name: 'الدوري الإيطالي' },
+  { code: 'BL1', name: 'الدوري الألماني' },
+];
+
 export default async function Home() {
-  const [newsRes, matchesRes, plStandings, pdStandings, saStandings, bl1Standings] = await Promise.all([
+  const [newsRes, matchesRes, ...standingsResults] = await Promise.all([
     supabase.from('news').select('*').order('created_at', { ascending: false }).limit(6),
     supabase.from('matches').select('*').order('match_time', { ascending: true }).limit(10),
-    supabase.from('standings').select('*').eq('league_code', 'PL').order('position', { ascending: true }).limit(5),
-    supabase.from('standings').select('*').eq('league_code', 'PD').order('position', { ascending: true }).limit(5),
-    supabase.from('standings').select('*').eq('league_code', 'SA').order('position', { ascending: true }).limit(5),
-    supabase.from('standings').select('*').eq('league_code', 'BL1').order('position', { ascending: true }).limit(5),
+    ...STANDINGS_LEAGUES.map(l =>
+      supabase.from('standings').select('*').eq('league_code', l.code).order('position', { ascending: true }).limit(5)
+    ),
   ]);
 
   if (newsRes.error) console.error('Error fetching news:', newsRes.error);
   if (matchesRes.error) console.error('Error fetching matches:', matchesRes.error);
-  if (plStandings.error) console.error('Error fetching PL standings:', plStandings.error);
-  if (pdStandings.error) console.error('Error fetching PD standings:', pdStandings.error);
-  if (saStandings.error) console.error('Error fetching SA standings:', saStandings.error);
-  if (bl1Standings.error) console.error('Error fetching BL1 standings:', bl1Standings.error);
 
   const news = newsRes.data || [];
   const allMatches = matchesRes.data || [];
 
-  const standingsData = {
-    PL: plStandings.data || [],
-    PD: pdStandings.data || [],
-    SA: saStandings.data || [],
-    BL1: bl1Standings.data || [],
-  };
+  const standingsData: Record<string, any[]> = {};
+  STANDINGS_LEAGUES.forEach((league, i) => {
+    if (standingsResults[i].error) console.error(`Error fetching ${league.code} standings:`, standingsResults[i].error);
+    standingsData[league.code] = standingsResults[i].data || [];
+  });
 
   const liveMatches = allMatches.filter((m: any) => m.status === 'live');
   const featuredNews = news[0];
   const sideNews = news.slice(1, 3);
-  const trendingNews = news.slice(3, 6);
 
   return (
     <main className={styles.main}>
       {/* SEO: Hidden H1 for accessibility and search engines */}
-      <h1 className="sr-only" style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0 }}>
+      <h1 className="sr-only">
         كورة غول - بث مباشر لمباريات اليوم، نتائج المباريات، جدول الترتيب، وآخر أخبار كرة القدم
       </h1>
 
@@ -127,8 +128,8 @@ export default async function Home() {
             )}
 
             {/* Side News Cards */}
-            {sideNews.map((item: any, i: number) => (
-              <Link href={item?.slug ? `/news/${item.slug}` : '#'} key={i} className={styles.newsCard} style={{ textDecoration: 'none', color: 'inherit' }}>
+            {sideNews.map((item: any) => (
+              <Link href={item?.slug ? `/news/${item.slug}` : '#'} key={item.id} className={styles.newsCard} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className={styles.newsCardContent}>
                   {item.image_url && (
                     <div className={styles.newsThumb}>
@@ -156,129 +157,13 @@ export default async function Home() {
           </div>
 
           <div className={styles.widgetsGrid}>
-            {/* Premier League */}
-            <div className={styles.widgetCard}>
-              <div className={styles.widgetHeader}>
-                <span className={styles.widgetTitle}>الدوري الإنجليزي</span>
-              </div>
-              <div className={styles.widgetBody}>
-                <table className={styles.miniTable}>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th style={{ textAlign: 'right' }}>الفريق</th>
-                      <th>لعب</th>
-                      <th>نقاط</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {standingsData.PL.length > 0 ? standingsData.PL.map((row: any) => (
-                      <tr key={row.id}>
-                        <td className={styles.posCell}>{row.position}</td>
-                        <td style={{ textAlign: 'right', fontWeight: 600 }}>{row.team}</td>
-                        <td>{row.mp}</td>
-                        <td className={styles.pointsCell}>{row.pts}</td>
-                      </tr>
-                    )) : (
-                      <tr><td colSpan={4} className={styles.emptyMsg}>سيتم التحديث قريباً</td></tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* La Liga */}
-            <div className={styles.widgetCard}>
-              <div className={styles.widgetHeader}>
-                <span className={styles.widgetTitle}>الدوري الإسباني</span>
-              </div>
-              <div className={styles.widgetBody}>
-                <table className={styles.miniTable}>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th style={{ textAlign: 'right' }}>الفريق</th>
-                      <th>لعب</th>
-                      <th>نقاط</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {standingsData.PD.length > 0 ? standingsData.PD.map((row: any) => (
-                      <tr key={row.id}>
-                        <td className={styles.posCell}>{row.position}</td>
-                        <td style={{ textAlign: 'right', fontWeight: 600 }}>{row.team}</td>
-                        <td>{row.mp}</td>
-                        <td className={styles.pointsCell}>{row.pts}</td>
-                      </tr>
-                    )) : (
-                      <tr><td colSpan={4} className={styles.emptyMsg}>سيتم التحديث قريباً</td></tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Serie A */}
-            <div className={styles.widgetCard}>
-              <div className={styles.widgetHeader}>
-                <span className={styles.widgetTitle}>الدوري الإيطالي</span>
-              </div>
-              <div className={styles.widgetBody}>
-                <table className={styles.miniTable}>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th style={{ textAlign: 'right' }}>الفريق</th>
-                      <th>لعب</th>
-                      <th>نقاط</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {standingsData.SA.length > 0 ? standingsData.SA.map((row: any) => (
-                      <tr key={row.id}>
-                        <td className={styles.posCell}>{row.position}</td>
-                        <td style={{ textAlign: 'right', fontWeight: 600 }}>{row.team}</td>
-                        <td>{row.mp}</td>
-                        <td className={styles.pointsCell}>{row.pts}</td>
-                      </tr>
-                    )) : (
-                      <tr><td colSpan={4} className={styles.emptyMsg}>سيتم التحديث قريباً</td></tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Bundesliga */}
-            <div className={styles.widgetCard}>
-              <div className={styles.widgetHeader}>
-                <span className={styles.widgetTitle}>الدوري الألماني</span>
-              </div>
-              <div className={styles.widgetBody}>
-                <table className={styles.miniTable}>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th style={{ textAlign: 'right' }}>الفريق</th>
-                      <th>لعب</th>
-                      <th>نقاط</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {standingsData.BL1.length > 0 ? standingsData.BL1.map((row: any) => (
-                      <tr key={row.id}>
-                        <td className={styles.posCell}>{row.position}</td>
-                        <td style={{ textAlign: 'right', fontWeight: 600 }}>{row.team}</td>
-                        <td>{row.mp}</td>
-                        <td className={styles.pointsCell}>{row.pts}</td>
-                      </tr>
-                    )) : (
-                      <tr><td colSpan={4} className={styles.emptyMsg}>سيتم التحديث قريباً</td></tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            {STANDINGS_LEAGUES.map((league) => (
+              <MiniStandingsWidget
+                key={league.code}
+                title={league.name}
+                rows={standingsData[league.code]}
+              />
+            ))}
           </div>
         </section>
       </div>

@@ -24,7 +24,7 @@
 .logo {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--fb-blue);
+  color: var(--primary-accent);
 }
 
 .tagline {
@@ -32,6 +32,32 @@
   color: var(--text-secondary);
   line-height: 1.6;
   max-width: 400px;
+}
+
+.socialIcons {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.socialLink {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.socialLink:hover {
+  background: var(--primary-accent);
+  color: #ffffff;
+  border-color: var(--primary-accent);
+  transform: translateY(-2px);
 }
 
 .linksSection {
@@ -63,7 +89,7 @@
 }
 
 .linksGroup a:hover {
-  color: var(--fb-blue);
+  color: var(--primary-accent);
   text-decoration: none;
 }
 

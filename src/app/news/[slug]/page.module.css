@@ -46,7 +46,7 @@
   font-weight: 900;
   line-height: 1.2;
   margin-bottom: 24px;
-  color: #fff;
+  color: var(--text-primary);
   letter-spacing: -0.02em;
 }
 
@@ -80,14 +80,14 @@
   font-size: 1.25rem;
   line-height: 1.8;
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
+  background: var(--bg-card);
   padding: 30px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-right: 5px solid var(--fb-blue);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  border-right: 5px solid var(--primary-accent);
   margin-bottom: 40px;
   font-weight: 500;
+  box-shadow: var(--shadow-card);
 }
 
 .contentBody {
@@ -110,14 +110,16 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
   margin-top: 60px;
+  box-shadow: var(--shadow-card);
 }
 
 .shareLabel {
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .shareIcons {
@@ -132,14 +134,18 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(255,255,255,0.05);
-  color: #fff;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   text-decoration: none;
   transition: all 0.3s ease;
+  font-weight: 700;
 }
 
 .shareBtn:hover {
-  background: var(--fb-blue);
+  background: var(--primary-accent);
+  color: #ffffff;
+  border-color: var(--primary-accent);
   transform: translateY(-3px);
 }
 
@@ -172,7 +178,7 @@
 .relatedThumb {
   height: 160px;
   position: relative;
-  background: #333;
+  background: linear-gradient(135deg, #e8f0fe 0%, #f0f2f5 50%, #e4e6eb 100%);
 }
 
 .relatedTitle {
