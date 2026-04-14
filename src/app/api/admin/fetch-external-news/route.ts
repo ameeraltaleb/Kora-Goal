@@ -3,67 +3,109 @@ import Parser from 'rss-parser';
 import { summarizeNews } from '@/lib/gemini';
 import { supabase } from '@/lib/supabase';
 
-const parser = new Parser({
-  headers: {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-    'Accept': 'application/rss+xml, application/xml;q=0.9, */*;q=0.8'
-  }
-});
+// User-Agent rotation
+const USER_AGENTS = [
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+];
+
+// Multiple RSS sources (fallback)
+const RSS_SOURCES = [
+  { url: 'https://www.goal.com/feeds/ar/news', name: 'Goal Arabia' },
+  { url: 'https://arabic.rt.com/sport/rss/', name: 'RT Arabic' },
+  { url: 'https://www.filgoal.com/rss/', name: 'FilGoal' },
+];
 
 export async function GET() {
   try {
-    // Using Sport360 as the most stable Arabic sports RSS source
-    const feed = await parser.parseURL('https://arabic.sport360.com/feed');
-    console.log(`Fetched ${feed.items.length} news items from Goal.com`);
+    let totalProcessed = 0;
+    const errors: string[] = [];
+    const successSources: string[] = [];
+    const processedItems: any[] = [];
 
-    let processedItems = [];
-    const itemsToProcess = feed.items.slice(0, 3); // Process top 3 for speed
-
-    for (const item of itemsToProcess) {
-      // Check if title or content already exists to avoid duplicates
-      const { data: existing } = await supabase
-        .from('news')
-        .select('id')
-        .eq('title', item.title?.substring(0, 100))
-        .single();
-
-      if (!existing) {
-      // Generate AI Summary
-      const rawText = `${item.title}\n\n${item.contentSnippet || item.content || ''}`;
-      const summary = await summarizeNews(rawText);
-
-      processedItems.push({
-        originalTitle: item.title,
-        aiSummary: summary
-      });
-
-      // Save to DB (Optional: only if supabase is configured)
+    for (const source of RSS_SOURCES) {
       try {
-        await supabase
-          .from('news')
-          .insert([
-            {
-              title: item.title?.substring(0, 100),
-              summary: summary,
-              category: 'football',
-              is_ai_generated: true,
-              created_at: new Date().toISOString()
-            }
-          ]);
-      } catch (dbError) {
-        console.warn("Could not save to Supabase, but AI summary is generated:", dbError);
+        const userAgent = USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
+
+        const parser = new Parser({
+          headers: {
+            'User-Agent': userAgent,
+            'Accept': 'application/rss+xml, application/xml;q=0.9, */*;q=0.8',
+          },
+          timeout: 10000,
+        });
+
+        const feed = await parser.parseURL(source.url);
+        const itemsToProcess = feed.items.slice(0, 3);
+
+        for (const item of itemsToProcess) {
+          const title = item.title?.substring(0, 150) || '';
+          if (!title) continue;
+
+          // Check for duplicates
+          const { data: existing } = await supabase
+            .from('news')
+            .select('id')
+            .eq('title', title)
+            .single();
+
+          if (existing) continue;
+
+          // AI summarization
+          const rawText = `${item.title}\n\n${item.contentSnippet || item.content || ''}`;
+          let summary = '';
+          try {
+            summary = await summarizeNews(rawText);
+          } catch {
+            summary = item.contentSnippet?.substring(0, 200) || '';
+          }
+
+          // Extract image
+          let imageUrl = null;
+          if (item.enclosure?.url) {
+            imageUrl = item.enclosure.url;
+          } else {
+            const imgMatch = (item.content || '').match(/<img[^>]+src="([^"]+)"/);
+            if (imgMatch) imageUrl = imgMatch[1];
+          }
+
+          processedItems.push({ title, summary });
+
+          await supabase.from('news').insert({
+            title,
+            summary,
+            content: item.contentSnippet || item.content || '',
+            image_url: imageUrl,
+            category: 'football',
+            is_ai_generated: true,
+            source_url: item.link || null,
+            source_name: source.name,
+            created_at: new Date().toISOString(),
+          });
+
+          totalProcessed++;
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        successSources.push(source.name);
+      } catch (sourceError: any) {
+        errors.push(`${source.name}: ${sourceError.message}`);
       }
     }
-  }
 
-    return NextResponse.json({ 
-      success: true, 
-      totalFound: feed.items.length,
-      processedCount: processedItems.length,
-      latestNews: processedItems
+    return NextResponse.json({
+      success: true,
+      processedCount: totalProcessed,
+      successSources,
+      errors: errors.length > 0 ? errors : undefined,
+      totalSources: RSS_SOURCES.length,
+      workingSources: successSources.length,
+      latestNews: processedItems,
     });
+
   } catch (error: any) {
-    console.error("News Fetch Error:", error);
+    console.error('Fetch External News Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
