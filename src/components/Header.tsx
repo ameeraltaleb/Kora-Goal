@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Header.module.css';
-import SyncButton from './SyncButton';
 
 export default function Header() {
   return (
@@ -28,9 +27,6 @@ export default function Header() {
           <Link href="/news" className={styles.navLink}>الأخبار</Link>
         </nav>
 
-        <div className={styles.adminSection}>
-          <SyncButton />
-        </div>
 
         <div className={styles.searchSection}>
           <div className={styles.searchBox}>

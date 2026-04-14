@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './page.module.css';
+import SyncButton from '@/components/SyncButton';
 
 interface AdminStats {
   totalMatches: number;
@@ -123,7 +124,10 @@ export default function AdminDashboard() {
       <main className={styles.mainContent}>
         <header className={styles.topHeader}>
           <h1>لوحة التحكم المتقدمة</h1>
-          <button onClick={fetchDashboardData} className={styles.refreshBtn} title="تحديث">↻</button>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <SyncButton />
+            <button onClick={fetchDashboardData} className={styles.refreshBtn} title="تحديث">↻</button>
+          </div>
         </header>
 
         {/* Stats Grid */}
