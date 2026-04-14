@@ -1,0 +1,21 @@
+{
+  "name": "كورة غول - Kora Goal",
+  "short_name": "كورة غول",
+  "description": "منصة كورة غول لمتابعة أهم مباريات اليوم بث مباشر، نتائج المباريات، جدول الترتيب، وأخر أخبار كرة القدم لحظة بلحظة.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0b",
+  "theme_color": "#00ff88",
+  "icons": [
+    {
+      "src": "/logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

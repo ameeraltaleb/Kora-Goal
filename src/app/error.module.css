@@ -1,0 +1,125 @@
+.errorContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-main);
+  padding: 2rem;
+}
+
+.errorContent {
+  max-width: 600px;
+  text-align: center;
+}
+
+.errorIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.errorTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.errorMessage {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.errorDetails {
+  background: rgba(228, 30, 63, 0.05);
+  border: 1px solid rgba(228, 30, 63, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: left;
+  direction: ltr;
+}
+
+.errorDetails h3 {
+  font-size: 0.9rem;
+  color: var(--fb-red);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.errorDetails pre {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: 'Courier New', monospace;
+  line-height: 1.6;
+}
+
+.stackTrace {
+  margin-top: 1rem;
+  opacity: 0.7;
+}
+
+.errorActions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.retryBtn,
+.homeBtn {
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.retryBtn {
+  background: var(--fb-blue);
+  color: #FFFFFF;
+}
+
+.retryBtn:hover {
+  background: var(--fb-blue-hover);
+}
+
+.homeBtn {
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.homeBtn:hover {
+  background: var(--bg-card-hover);
+}
+
+@media (max-width: 640px) {
+  .errorTitle {
+    font-size: 1.5rem;
+  }
+
+  .errorMessage {
+    font-size: 1rem;
+  }
+
+  .errorActions {
+    flex-direction: column;
+  }
+
+  .retryBtn,
+  .homeBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

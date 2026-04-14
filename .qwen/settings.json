@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(findstr *)",
+      "Bash(taskkill *)",
+      "Bash(timeout *)",
+      "Bash(curl *)",
+      "Bash(powershell *)",
+      "Bash(node *)",
+      "Bash(del *)",
+      "Bash(git init)",
+      "Bash(git add *)"
+    ]
+  },
+  "$version": 3
+}

@@ -1,0 +1,105 @@
+.notFoundContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-main);
+  padding: 2rem;
+}
+
+.notFoundContent {
+  max-width: 600px;
+  text-align: center;
+}
+
+.errorCode {
+  font-size: 6rem;
+  font-weight: 700;
+  color: var(--fb-blue);
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.errorTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.errorMessage {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.suggestions {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: left;
+  box-shadow: var(--shadow-card);
+}
+
+.suggestions h3 {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.suggestions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.suggestions li {
+  margin-bottom: 0.75rem;
+}
+
+.suggestions a {
+  color: var(--fb-blue);
+  text-decoration: none;
+  font-size: 1rem;
+  transition: var(--transition);
+  font-weight: 600;
+}
+
+.suggestions a:hover {
+  color: var(--fb-blue-hover);
+  text-decoration: underline;
+}
+
+.homeBtn {
+  display: inline-block;
+  padding: 10px 24px;
+  background: var(--fb-blue);
+  color: #FFFFFF;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.homeBtn:hover {
+  background: var(--fb-blue-hover);
+}
+
+@media (max-width: 640px) {
+  .errorCode {
+    font-size: 5rem;
+  }
+
+  .errorTitle {
+    font-size: 1.5rem;
+  }
+
+  .errorMessage {
+    font-size: 1rem;
+  }
+}

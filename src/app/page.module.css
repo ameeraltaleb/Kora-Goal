@@ -1,0 +1,511 @@
+.main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-main);
+}
+
+.contentContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ========== SECTION HEADERS ========== */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.liveIcon {
+  width: 12px;
+  height: 12px;
+  background: var(--fb-red);
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.liveCount {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  background: var(--bg-input);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+}
+
+.viewAllLink {
+  font-size: 0.9rem;
+  color: var(--fb-blue);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.viewAllLink:hover {
+  color: var(--fb-blue-hover);
+  text-decoration: none;
+}
+
+/* ========== SECTION 1: LIVE NOW ========== */
+.liveSection {
+  background: linear-gradient(135deg, rgba(228, 30, 63, 0.05) 0%, rgba(240, 242, 245, 1) 100%);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(228, 30, 63, 0.2);
+}
+
+.liveCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.liveCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: var(--transition);
+  box-shadow: var(--shadow-card);
+}
+
+.liveCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--fb-blue-border);
+}
+
+.liveCardHeader {
+  padding: 12px 16px;
+  background: var(--bg-input);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.liveBadge {
+  background: rgba(228, 30, 63, 0.1);
+  color: var(--fb-red);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  background: var(--fb-red);
+  border-radius: 50%;
+  animation: pulse 1s infinite;
+}
+
+.liveTournament {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.liveCardBody {
+  padding: 20px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.liveTeam {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.liveTeamLogo {
+  width: 48px;
+  height: 48px;
+  background: var(--bg-input);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+}
+
+.teamName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.liveScoreSection {
+  padding: 8px 16px;
+}
+
+.liveScore {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--fb-blue);
+  letter-spacing: 1px;
+}
+
+.liveCardFooter {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-input);
+}
+
+.watchBtn {
+  display: block;
+  text-align: center;
+  background: var(--fb-blue);
+  color: #FFFFFF;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.watchBtn:hover {
+  background: var(--fb-blue-hover);
+}
+
+/* ========== SECTION 2: MATCHES ========== */
+.matchesSection {
+  margin-top: 8px;
+}
+
+/* ========== SECTION 3: NEWS ========== */
+.newsSection {
+  margin-top: 8px;
+}
+
+.newsGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 16px;
+}
+
+.newsCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: var(--transition);
+  box-shadow: var(--shadow-card);
+}
+
+.newsCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--fb-blue-border);
+}
+
+.newsCardFeatured {
+  min-height: 320px;
+}
+
+.newsImageContainer {
+  position: relative;
+  height: 100%;
+  min-height: 320px;
+}
+
+.newsOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.newsCategory {
+  background: var(--fb-blue);
+  color: #FFFFFF;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.newsTitleFeatured {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.4;
+}
+
+.newsCardContent {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.newsThumb {
+  position: relative;
+  height: 120px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.newsTextContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.newsTitleSmall {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.newsTime {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ========== SECTION 4: WIDGETS ========== */
+.widgetsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.widgetCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.widgetHeader {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.widgetTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.widgetLink {
+  font-size: 0.85rem;
+  color: var(--fb-blue);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.widgetLink:hover {
+  color: var(--fb-blue-hover);
+  text-decoration: none;
+}
+
+.widgetBody {
+  padding: 16px;
+}
+
+/* Mini Table */
+.miniTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.miniTable th {
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.miniTable td {
+  padding: 10px 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.miniTable tr:last-child td {
+  border-bottom: none;
+}
+
+.miniTable tr:hover {
+  background: var(--bg-card-hover);
+}
+
+.pointsCell {
+  color: var(--fb-blue);
+  font-weight: 700;
+}
+
+/* Trending */
+.trendItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+  transition: var(--transition);
+}
+
+.trendItem:last-child {
+  margin-bottom: 0;
+}
+
+.trendItem:hover {
+  background: var(--bg-card-hover);
+}
+
+.trendNumber {
+  width: 32px;
+  height: 32px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--fb-blue);
+  flex-shrink: 0;
+}
+
+.trendContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.trendTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.trendTime {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+  .newsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .newsCardFeatured {
+    grid-column: 1 / -1;
+    min-height: 280px;
+  }
+
+  .newsImageContainer {
+    min-height: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contentContainer {
+    padding: 16px 12px 40px;
+    gap: 24px;
+  }
+
+  .liveCardsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .newsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .newsCardFeatured {
+    grid-column: auto;
+  }
+
+  .newsImageContainer {
+    min-height: 240px;
+  }
+
+  .widgetsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionTitle {
+    font-size: 1.25rem;
+  }
+
+  .liveSection {
+    padding: 16px;
+  }
+
+  .liveCardBody {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .liveTeam {
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .liveScore {
+    font-size: 1.8rem;
+  }
+}

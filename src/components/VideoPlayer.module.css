@@ -1,0 +1,138 @@
+.playerWrapper {
+  width: 100%;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
+}
+
+.iframeContainer {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  /* 16:9 Aspect Ratio */
+  background: #000;
+}
+
+.iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.loader,
+.errorOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(240, 242, 245, 0.98);
+  z-index: 10;
+  text-align: center;
+  padding: 24px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-left-color: var(--fb-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorOverlay {
+  background: rgba(228, 30, 63, 0.05);
+  color: var(--fb-red);
+  font-weight: 700;
+}
+
+.controls {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+.serverTitle {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.serverButtons {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+
+.serverBtn {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.serverBtn:hover {
+  border-color: var(--fb-blue);
+  background: var(--bg-card-hover);
+}
+
+.active {
+  background: var(--fb-blue);
+  color: #FFFFFF;
+  border-color: var(--fb-blue);
+}
+
+.reportBtn {
+  background: transparent;
+  border: 1px solid rgba(228, 30, 63, 0.3);
+  color: var(--fb-red);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.reportBtn:hover {
+  background: rgba(228, 30, 63, 0.1);
+}
+
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
+  }
+
+  .serverButtons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

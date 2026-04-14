@@ -1,0 +1,168 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  background: var(--bg-header);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.5rem 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.logoImage {
+  border-radius: var(--radius-full);
+}
+
+.logoText {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--fb-blue);
+  letter-spacing: 0;
+}
+
+.greenText {
+  color: var(--fb-blue);
+}
+
+.nav {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
+}
+
+.navLink {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: var(--transition);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+}
+
+.navLink:hover {
+  background: var(--bg-card-hover);
+  color: var(--fb-blue);
+  text-decoration: none;
+}
+
+.navLink:global(.active) {
+  color: var(--fb-blue);
+  background: var(--fb-blue-light);
+}
+
+.adminSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.syncBtn {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  padding: 8px 16px;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.syncBtn:hover:not(:disabled) {
+  background: var(--bg-card-hover);
+  border-color: var(--border-color);
+}
+
+.syncIcon {
+  color: var(--text-secondary);
+}
+
+.searchSection {
+  display: flex;
+  align-items: center;
+}
+
+.searchBox {
+  position: relative;
+  width: 240px;
+}
+
+.searchInput {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  padding: 8px 16px 8px 40px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--fb-blue);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 2px var(--fb-blue-light);
+}
+
+.searchInput::placeholder {
+  color: var(--text-muted);
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.spinning {
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+
+  .searchBox {
+    width: 180px;
+  }
+}

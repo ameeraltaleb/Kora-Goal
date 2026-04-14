@@ -1,0 +1,129 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-main);
+}
+
+.content {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  width: 100%;
+}
+
+.headerSection {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tab,
+.tabActive {
+  padding: 8px 20px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.tab:hover {
+  background: var(--bg-card-hover);
+}
+
+.tabActive {
+  background: var(--fb-blue);
+  color: #FFFFFF;
+  border-color: var(--fb-blue);
+}
+
+.tabActive:hover {
+  background: var(--fb-blue-hover);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  padding: 14px 12px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-input);
+}
+
+.table td {
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.table tr:hover {
+  background: var(--bg-card-hover);
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.teamCol {
+  text-align: right !important;
+  padding-right: 24px !important;
+  font-weight: 600;
+}
+
+.ptsCol {
+  color: var(--fb-blue);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .hideMobile {
+    display: none;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px 8px;
+    font-size: 0.85rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+}
