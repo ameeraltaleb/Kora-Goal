@@ -285,8 +285,5 @@ export default async function Home() {
         </section>
       </div>
     </main>
-
-      </div>
-    </main>
   );
 }
