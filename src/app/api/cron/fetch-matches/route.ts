@@ -54,12 +54,15 @@ export async function GET(request: Request) {
       }, { status: 500 });
     }
 
-    // جلب مباريات اليوم من football-data.org
+    // جلب مباريات اليوم من football-data.org (محددة بالدوريات المجانية لتجنب 403)
     const today = new Date().toISOString().split('T')[0];
     const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    
+    // تحويل مصفوفة الدوريات إلى نص مفصولة بفاصلة للرابط
+    const competitionsParam = LEAGUES.join(',');
 
     const response = await fetch(
-      `${API_BASE}/matches?dateFrom=${today}&dateTo=${tomorrow}`,
+      `${API_BASE}/matches?dateFrom=${today}&dateTo=${tomorrow}&competitions=${competitionsParam}`,
       {
         headers: {
           'X-Auth-Token': API_KEY,
@@ -69,6 +72,7 @@ export async function GET(request: Request) {
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error(`Football API Error (${response.status}):`, errorText);
       throw new Error(`Football API Error ${response.status}: ${errorText}`);
     }
 

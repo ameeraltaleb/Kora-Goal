@@ -21,22 +21,27 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function Home() {
-  const [newsRes, matchesRes, standingsRes] = await Promise.all([
+  const [newsRes, matchesRes, plStandings, pdStandings, saStandings] = await Promise.all([
     supabase.from('news').select('*').order('created_at', { ascending: false }).limit(6),
-    supabase.from('matches').select('*').order('match_time', { ascending: true }).limit(8),
+    supabase.from('matches').select('*').order('match_time', { ascending: true }).limit(10),
     supabase.from('standings').select('*').eq('league_code', 'PL').order('position', { ascending: true }).limit(5),
+    supabase.from('standings').select('*').eq('league_code', 'PD').order('position', { ascending: true }).limit(5),
+    supabase.from('standings').select('*').eq('league_code', 'SA').order('position', { ascending: true }).limit(5),
   ]);
 
   const news = newsRes.data || [];
   const allMatches = matchesRes.data || [];
-  const standings = standingsRes.data || [];
+  
+  const standingsData = {
+    PL: plStandings.data || [],
+    PD: pdStandings.data || [],
+    SA: saStandings.data || [],
+  };
 
   const liveMatches = allMatches.filter((m: any) => m.status === 'live');
-  const todayMatches = allMatches.filter((m: any) => m.status === 'upcoming' || m.status === 'live').slice(0, 6);
-
   const featuredNews = news[0];
   const sideNews = news.slice(1, 3);
-  const trendingNews = news.slice(0, 4);
+  const trendingNews = news.slice(3, 6);
 
   return (
     <main className={styles.main}>
@@ -154,69 +159,132 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ========== SECTION 4: STANDINGS + TRENDING (2 Widgets) ========== */}
-        <div className={styles.widgetsGrid}>
-          {/* Standings Mini Table */}
-          <div className={styles.widgetCard}>
-            <div className={styles.widgetHeader}>
-              <span className={styles.widgetTitle}>🏆 ترتيب الدوري الإنجليزي</span>
-              <Link href="/standings" className={styles.widgetLink}>عرض الكل</Link>
-            </div>
-            <div className={styles.widgetBody}>
-              <table className={styles.miniTable}>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th style={{ textAlign: 'right' }}>الفريق</th>
-                    <th>لعب</th>
-                    <th>+/-</th>
-                    <th>نقاط</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {standings.length > 0 ? standings.map((row: any) => (
-                    <tr key={row.id}>
-                      <td>{row.position}</td>
-                      <td style={{ textAlign: 'right', fontWeight: 600 }}>{row.team}</td>
-                      <td>{row.mp}</td>
-                      <td>{row.gd > 0 ? `+${row.gd}` : row.gd}</td>
-                      <td className={styles.pointsCell}>{row.pts}</td>
-                    </tr>
-                  )) : (
+        {/* ========== SECTION 4: MULTI-LEAGUE STANDINGS (Full Width Grid) ========== */}
+        <section className={styles.standingsSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>🏆 ترتيب الدوريات الكبرى</h2>
+            <Link href="/standings" className={styles.viewAllLink}>التفاصيل الكاملة ←</Link>
+          </div>
+          
+          <div className={styles.widgetsGrid}>
+            {/* Premier League */}
+            <div className={styles.widgetCard}>
+              <div className={styles.widgetHeader}>
+                <span className={styles.widgetTitle}>الدوري الإنجليزي</span>
+              </div>
+              <div className={styles.widgetBody}>
+                <table className={styles.miniTable}>
+                  <thead>
                     <tr>
-                      <td colSpan={5} style={{ textAlign: 'center', padding: '20px', color: 'var(--text-secondary)' }}>
-                        يتم تحديث الترتيب تلقائياً
-                      </td>
+                      <th>#</th>
+                      <th style={{ textAlign: 'right' }}>الفريق</th>
+                      <th>لعب</th>
+                      <th>نقاط</th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {standingsData.PL.length > 0 ? standingsData.PL.map((row: any) => (
+                      <tr key={row.id}>
+                        <td className={styles.posCell}>{row.position}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 600 }}>{row.team}</td>
+                        <td>{row.mp}</td>
+                        <td className={styles.pointsCell}>{row.pts}</td>
+                      </tr>
+                    )) : (
+                      <tr><td colSpan={4} className={styles.emptyMsg}>سيتم التحديث قريباً</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
 
-          {/* Trending News */}
-          <div className={styles.widgetCard}>
-            <div className={styles.widgetHeader}>
-              <span className={styles.widgetTitle}>🔥 الأخبار الرائجة</span>
-              <Link href="/news" className={styles.widgetLink}>المزيد ←</Link>
+            {/* La Liga */}
+            <div className={styles.widgetCard}>
+              <div className={styles.widgetHeader}>
+                <span className={styles.widgetTitle}>الدوري الإسباني</span>
+              </div>
+              <div className={styles.widgetBody}>
+                <table className={styles.miniTable}>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th style={{ textAlign: 'right' }}>الفريق</th>
+                      <th>لعب</th>
+                      <th>نقاط</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {standingsData.PD.length > 0 ? standingsData.PD.map((row: any) => (
+                      <tr key={row.id}>
+                        <td className={styles.posCell}>{row.position}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 600 }}>{row.team}</td>
+                        <td>{row.mp}</td>
+                        <td className={styles.pointsCell}>{row.pts}</td>
+                      </tr>
+                    )) : (
+                      <tr><td colSpan={4} className={styles.emptyMsg}>سيتم التحديث قريباً</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div className={styles.widgetBody}>
-              {trendingNews.length > 0 ? trendingNews.map((item: any, i: number) => (
-                <Link href={item.slug ? `/news/${item.slug}` : '#'} key={i} className={styles.trendItem} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <div className={styles.trendNumber}>{i + 1}</div>
-                  <div className={styles.trendContent}>
-                    <span className={styles.trendTitle}>{item.title}</span>
-                    <span className={styles.trendTime}>
-                      {item.created_at ? new Date(item.created_at).toLocaleDateString('ar', { day: 'numeric', month: 'short' }) : ''}
-                    </span>
-                  </div>
-                </Link>
-              )) : (
-                <p style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: '20px' }}>لا توجد أخبار حالياً</p>
-              )}
+
+            {/* Serie A */}
+            <div className={styles.widgetCard}>
+              <div className={styles.widgetHeader}>
+                <span className={styles.widgetTitle}>الدوري الإيطالي</span>
+              </div>
+              <div className={styles.widgetBody}>
+                <table className={styles.miniTable}>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th style={{ textAlign: 'right' }}>الفريق</th>
+                      <th>لعب</th>
+                      <th>نقاط</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {standingsData.SA.length > 0 ? standingsData.SA.map((row: any) => (
+                      <tr key={row.id}>
+                        <td className={styles.posCell}>{row.position}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 600 }}>{row.team}</td>
+                        <td>{row.mp}</td>
+                        <td className={styles.pointsCell}>{row.pts}</td>
+                      </tr>
+                    )) : (
+                      <tr><td colSpan={4} className={styles.emptyMsg}>سيتم التحديث قريباً</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Trending News Widget */}
+            <div className={styles.widgetCard}>
+              <div className={styles.widgetHeader}>
+                <span className={styles.widgetTitle}>🔥 الأخبار الرائجة</span>
+              </div>
+              <div className={styles.widgetBody}>
+                {trendingNews.length > 0 ? trendingNews.map((item: any, i: number) => (
+                  <Link href={item.slug ? `/news/${item.slug}` : '#'} key={i} className={styles.trendItem} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <div className={styles.trendNumber}>{i + 1}</div>
+                    <div className={styles.trendContent}>
+                      <span className={styles.trendTitle}>{item.title}</span>
+                      <span className={styles.trendTime}>
+                        {item.created_at ? new Date(item.created_at).toLocaleDateString('ar', { day: 'numeric', month: 'short' }) : ''}
+                      </span>
+                    </div>
+                  </Link>
+                )) : (
+                  <p className={styles.emptyMsg}>لا توجد أخبار حالياً</p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        </section>
+      </div>
+    </main>
 
       </div>
     </main>

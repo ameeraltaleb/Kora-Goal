@@ -206,9 +206,29 @@
   background: var(--fb-blue-hover);
 }
 
-/* ========== SECTION 2: MATCHES ========== */
 .matchesSection {
   margin-top: 8px;
+}
+
+.standingsSection {
+  margin-top: 8px;
+  background: var(--bg-card);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.posCell {
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-family: var(--font-outfit);
+}
+
+.emptyMsg {
+  text-align: center;
+  padding: 30px !important;
+  color: var(--text-muted);
+  font-size: 0.9rem;
 }
 
 /* ========== SECTION 3: NEWS ========== */
@@ -312,7 +332,7 @@
 /* ========== SECTION 4: WIDGETS ========== */
 .widgetsGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
 }
 
