@@ -77,45 +77,9 @@ export default async function Home() {
                   {group.logo && <Image src={group.logo} alt="" width={20} height={20} unoptimized />}
                   <span>{tournament}</span>
                 </div>
-                <div className={styles.liveCardsGrid}>
+                <div className={styles.liveRowsContainer}>
                   {group.items.map((match: any) => (
-                    <Link href={`/match/${match.id}`} key={match.id} className={styles.liveCard} style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <div className={styles.liveCardHeader}>
-                        <span className={styles.liveBadge}>
-                          <span className={styles.liveDot}></span>
-                          LIVE
-                        </span>
-                        <span className={styles.liveStatusText}>{match.status === 'live' ? 'جارية الآن' : match.status}</span>
-                      </div>
-
-                      <div className={styles.liveCardBody}>
-                        <div className={styles.liveTeam}>
-                          {match.home_logo && (
-                            <div className={styles.liveTeamLogo}>
-                              <Image src={match.home_logo} alt={match.home_team} width={40} height={40} style={{ objectFit: 'contain' }} unoptimized />
-                            </div>
-                          )}
-                          <span className={styles.teamName}>{match.home_team}</span>
-                        </div>
-
-                        <div className={styles.liveScoreSection}>
-                          <div className={styles.liveScore}>{match.score || '0 - 0'}</div>
-                        </div>
-
-                        <div className={styles.liveTeam}>
-                          <span className={styles.teamName}>{match.away_team}</span>
-                          {match.away_logo && (
-                            <div className={styles.liveTeamLogo}>
-                              <Image src={match.away_logo} alt={match.away_team} width={40} height={40} style={{ objectFit: 'contain' }} unoptimized />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className={styles.liveCardFooter}>
-                        <span className={styles.watchBtn}>▶ شاهد البث المباشر</span>
-                      </div>
-                    </Link>
+                    <MatchCard key={match.id} match={match} />
                   ))}
                 </div>
               </div>

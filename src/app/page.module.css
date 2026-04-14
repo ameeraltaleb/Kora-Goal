@@ -106,10 +106,10 @@
   color: var(--text-primary);
 }
 
-.liveCardsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
+.liveRowsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .liveCard {

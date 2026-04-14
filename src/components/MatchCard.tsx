@@ -17,53 +17,69 @@ export default function MatchCard({ match }: MatchCardProps) {
     : '';
 
   return (
-    <div className={`bento-box ${styles.card}`}>
-      <div className={styles.header}>
-        <span className={styles.tournament}>{tournament || ''}</span>
-        {status === 'live' && <span className={styles.liveBadge}>مباشر</span>}
-      </div>
-
-      <div className={styles.matchMain}>
-        <div className={styles.team}>
-          <div className={styles.logoSlot}>
-            {home_logo ? (
-              <Image src={home_logo} alt={home_team} width={50} height={50} className={styles.logo} unoptimized />
-            ) : (
-              <span style={{fontSize: '2rem'}}>⚽</span>
-            )}
+    <Link href={`/match/${id}`} className={styles.cardLink}>
+      <div className={styles.card}>
+        <div className={styles.matchMain}>
+          {/* Team 1 */}
+          <div className={styles.team}>
+            <span className={styles.teamName}>{home_team}</span>
+            <div className={styles.logoWrapper}>
+              {home_logo ? (
+                <Image src={home_logo} alt={home_team} width={36} height={36} className={styles.logo} unoptimized />
+              ) : (
+                <span className={styles.placeholderLogo}>⚽</span>
+              )}
+            </div>
           </div>
-          <span className={styles.teamName}>{home_team}</span>
-        </div>
 
-        <div className={styles.scoreSection}>
-          {status === 'upcoming' ? (
-            <span className={styles.time}>{displayTime}</span>
-          ) : (
-            <span className={styles.score}>{score}</span>
-          )}
-        </div>
+          {/* Score/Time Section */}
+          <div className={styles.centerSection}>
+            <div className={styles.tournamentInfo}>
+              {match.league_logo && <Image src={match.league_logo} alt="" width={16} height={16} unoptimized />}
+              <span className={styles.tournamentName}>{tournament}</span>
+            </div>
+            
+            <div className={styles.scoreBox}>
+              {status === 'live' ? (
+                <>
+                  <span className={styles.liveScore}>{score || '0 - 0'}</span>
+                  <div className={styles.liveIndicator}>
+                    <span className={styles.pulse}></span>
+                    مباشر
+                  </div>
+                </>
+              ) : status === 'finished' ? (
+                <>
+                  <span className={styles.finalScore}>{score}</span>
+                  <span className={styles.finalBadge}>انتهت</span>
+                </>
+              ) : (
+                <>
+                  <span className={styles.matchTime}>{displayTime}</span>
+                  <span className={styles.upcomingBadge}>تبدأ قريباً</span>
+                </>
+              )}
+            </div>
 
-        <div className={styles.team}>
-          <div className={styles.logoSlot}>
-            {away_logo ? (
-              <Image src={away_logo} alt={away_team} width={50} height={50} className={styles.logo} unoptimized />
-            ) : (
-              <span style={{fontSize: '2rem'}}>⚽</span>
-            )}
+            <div className={styles.matchMeta}>
+              {channel && <span className={styles.metaItem}>📺 {channel}</span>}
+              {commentator && <span className={styles.metaItem}>🎤 {commentator}</span>}
+            </div>
           </div>
-          <span className={styles.teamName}>{away_team}</span>
-        </div>
-      </div>
 
-      <div className={styles.footer}>
-        <div className={styles.info}>
-          {channel && <span className={styles.iconLabel}>📺 {channel}</span>}
-          {commentator && <span className={styles.iconLabel}>🎤 {commentator}</span>}
+          {/* Team 2 */}
+          <div className={styles.team}>
+            <div className={styles.logoWrapper}>
+              {away_logo ? (
+                <Image src={away_logo} alt={away_team} width={36} height={36} className={styles.logo} unoptimized />
+              ) : (
+                <span className={styles.placeholderLogo}>⚽</span>
+              )}
+            </div>
+            <span className={styles.teamName}>{away_team}</span>
+          </div>
         </div>
-        <Link href={`/match/${id}`} className={styles.watchBtn}>
-          {status === 'finished' ? 'ملخص المباراة' : 'شاهد البث'}
-        </Link>
       </div>
-    </div>
+    </Link>
   );
 }
