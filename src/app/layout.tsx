@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cairo } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -84,6 +85,19 @@ export default function RootLayout({
     <html lang="ar" dir="rtl" className={cairo.variable}>
       <head>
         <meta name="google-site-verification" content="lQabIv7YQLLRFkK4JgroWCZ13gnDib3ALmxpBw0Ld4k" />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-KZ330NW8E2"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-KZ330NW8E2');
+          `}
+        </Script>
       </head>
       <body className={cairo.className}>
         {/* Skip Navigation for Accessibility */}
