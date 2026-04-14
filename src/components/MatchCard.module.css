@@ -2,241 +2,190 @@
   text-decoration: none;
   color: inherit;
   display: block;
+  margin-bottom: 12px;
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 12px 20px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 12px 24px;
+  transition: var(--transition);
+  box-shadow: var(--shadow-card);
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: var(--fb-blue);
-  opacity: 0;
-  transition: opacity 0.3s;
 }
 
 .card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateX(-4px);
-}
-
-.card:hover::before {
-  opacity: 1;
+  transform: translateY(-2px);
+  border-color: var(--primary-accent);
+  box-shadow: var(--shadow-hover);
 }
 
 .matchMain {
   display: grid;
-  grid-template-columns: 1fr 180px 1fr;
+  grid-template-columns: 1fr 200px 1fr;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 }
 
 .team {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 15px;
 }
 
 .team:first-child {
+  flex-direction: row;
   justify-content: flex-end;
-  text-align: left;
 }
 
 .team:last-child {
-  justify-content: flex-start;
-  text-align: right;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
 }
 
 .teamName {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .logoWrapper {
-  width: 44px;
-  height: 44px;
-  background: rgba(255, 255, 255, 0.05);
+  width: 42px;
+  height: 42px;
+  background: #fff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 }
 
 .logo {
   object-fit: contain;
 }
 
-.placeholderLogo {
-  font-size: 1.5rem;
-}
-
 .centerSection {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .tournamentInfo {
   display: flex;
   align-items: center;
-  gap: 4px;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
+  gap: 6px;
+  margin-bottom: 4px;
 }
 
 .tournamentName {
-  font-size: 0.7rem;
-  color: var(--text-muted);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
   font-weight: 600;
-  text-transform: uppercase;
 }
 
 .scoreBox {
-  background: rgba(0, 0, 0, 0.4);
-  padding: 8px 16px;
+  padding: 6px 20px;
   border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 100px;
-  border: 1px solid rgba(0, 255, 136, 0.1);
+  min-width: 110px;
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
 }
 
 .liveScore {
-  font-family: 'Inter', monospace;
-  font-size: 1.6rem;
+  font-size: 1.7rem;
   font-weight: 800;
-  color: #00ff88;
+  color: var(--primary-accent);
   letter-spacing: 2px;
-  line-height: 1;
 }
 
 .finalScore {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 800;
-  color: var(--text-primary);
-  line-height: 1;
+  color: var(--navy-header);
 }
 
 .matchTime {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--fb-blue);
-  line-height: 1;
+  color: var(--navy-header);
 }
 
 .liveIndicator {
   font-size: 0.65rem;
-  font-weight: 700;
-  color: #ff4d4f;
-  margin-top: 4px;
+  font-weight: 800;
+  color: var(--primary-accent);
   display: flex;
   align-items: center;
-  gap: 4px;
-  text-transform: uppercase;
+  gap: 5px;
+  margin-top: 2px;
 }
 
 .pulse {
-  width: 6px;
-  height: 6px;
-  background: #ff4d4f;
+  width: 7px;
+  height: 7px;
+  background: var(--primary-accent);
   border-radius: 50%;
   animation: pulseAnim 1.5s infinite;
 }
 
 @keyframes pulseAnim {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(255, 77, 79, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 79, 0); }
+  0% { transform: scale(0.95); opacity: 1; }
+  70% { transform: scale(3); opacity: 0; }
+  100% { transform: scale(0.95); opacity: 0; }
 }
 
 .finalBadge, .upcomingBadge {
   font-size: 0.65rem;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 1px 8px;
   border-radius: 4px;
   margin-top: 4px;
-  text-transform: uppercase;
 }
 
-.finalBadge { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); }
-.upcomingBadge { background: rgba(0, 119, 255, 0.1); color: var(--fb-blue); }
+.finalBadge { background: #e2e8f0; color: #64748b; }
+.upcomingBadge { background: #fee2e2; color: var(--primary-accent); }
 
 .matchMeta {
   display: flex;
-  gap: 12px;
+  gap: 15px;
   font-size: 0.75rem;
   color: var(--text-muted);
+  margin-top: 4px;
 }
 
 .metaItem {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
-/* Mobile Responsiveness */
+/* Mobile Adjustments */
 @media (max-width: 768px) {
   .matchMain {
     grid-template-columns: 1fr 140px 1fr;
-    gap: 10px;
-    padding: 4px 0;
+    gap: 12px;
   }
-
-  .teamName {
-    font-size: 0.85rem;
-  }
-
-  .logoWrapper {
-    width: 32px;
-    height: 32px;
-  }
-
-  .liveScore { font-size: 1.2rem; }
-  .matchTime { font-size: 1rem; }
-  .scoreBox { min-width: 80px; padding: 6px 10px; }
-  .matchMeta { display: none; } /* Hide meta tags on small mobile to save space */
-  .tournamentName { display: none; } /* Show only icon on small mobile */
+  
+  .teamName { font-size: 0.9rem; }
+  .logoWrapper { width: 34px; height: 34px; }
+  .liveScore { font-size: 1.3rem; }
+  .scoreBox { min-width: 90px; }
 }
 
 @media (max-width: 480px) {
   .matchMain {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 10px 0;
+    padding: 8px 0;
   }
-
-  .team {
-    justify-content: center !important;
-    width: 100%;
-    flex-direction: row;
-    gap: 15px;
-  }
-
-  .team:first-child { flex-direction: row-reverse; }
-
-  .card:hover { transform: none; }
+  
+  .team { width: 100%; justify-content: space-between !important; }
+  .team:first-child { flex-direction: row; }
+  .team:last-child { flex-direction: row-reverse; }
 }
