@@ -13,6 +13,15 @@ const LEAGUES = [
 
 export async function GET(request: Request) {
   try {
+    const authHeader = request.headers.get('Authorization');
+    const cronSecret = process.env.CRON_SECRET;
+    
+    if (process.env.NODE_ENV === 'production') {
+      if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    }
+
     if (!API_KEY) {
       return NextResponse.json({ 
         error: 'FOOTBALL_API_KEY is not configured' 

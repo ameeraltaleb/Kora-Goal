@@ -3,8 +3,14 @@ import { supabase } from '@/lib/supabase';
 
 export async function GET(request: Request) {
   try {
-    // SECURITY: Optional: Add Authorization header check here to ensure only Vercel can trigger it.
-    // e.g., if (request.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) ...
+    const authHeader = request.headers.get('Authorization');
+    const cronSecret = process.env.CRON_SECRET;
+    
+    if (process.env.NODE_ENV === 'production') {
+      if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    }
 
     const now = new Date();
     

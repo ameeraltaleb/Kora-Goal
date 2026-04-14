@@ -38,6 +38,15 @@ function categorizeNews(title: string, content: string): string {
 
 export async function GET(request: Request) {
   try {
+    const authHeader = request.headers.get('Authorization');
+    const cronSecret = process.env.CRON_SECRET;
+    
+    if (process.env.NODE_ENV === 'production') {
+      if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    }
+
     let totalProcessed = 0;
     const errors: string[] = [];
     const successSources: string[] = [];

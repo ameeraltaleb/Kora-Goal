@@ -11,15 +11,15 @@ export async function POST(request: Request) {
     }
 
     // Call Gemini to summarize
-    const summary = await summarizeNews(rawText);
+    const aiData = await summarizeNews(rawText);
 
     // Save to Supabase
     const { data, error } = await supabase
       .from('news')
       .insert([
         { 
-          title: summary.split('\n')[0].substring(0, 100), // First line as title
-          summary: summary,
+          title: aiData.title,
+          summary: aiData.content,
           category: category || 'general',
           is_ai_generated: true
         }

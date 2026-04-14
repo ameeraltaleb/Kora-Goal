@@ -39,12 +39,11 @@ function generateDefaultServers(homeTeam: string, awayTeam: string) {
 
 export async function GET(request: Request) {
   try {
-    // التحقق من مفتاح الحماية (اختياري)
     const authHeader = request.headers.get('Authorization');
     const cronSecret = process.env.CRON_SECRET;
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-      // Allow without auth in development, but check in production
-      if (process.env.NODE_ENV === 'production') {
+    
+    if (process.env.NODE_ENV === 'production') {
+      if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
     }

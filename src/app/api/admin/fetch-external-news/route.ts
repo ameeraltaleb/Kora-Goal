@@ -46,7 +46,7 @@ export async function GET() {
         const itemsToProcess = feed.items.slice(0, 5);
 
         for (const item of itemsToProcess) {
-          const title = item.title?.substring(0, 150) || '';
+          let title = item.title?.substring(0, 150) || '';
           if (!title) continue;
 
           // Check for duplicates
@@ -62,7 +62,9 @@ export async function GET() {
           const rawText = `${item.title}\n\n${item.contentSnippet || item.content || ''}`;
           let summary = '';
           try {
-            summary = await summarizeNews(rawText);
+            const aiData = await summarizeNews(rawText);
+            if (aiData.title) title = aiData.title; // Update with AI catchy title
+            summary = aiData.content || '';
           } catch {
             summary = item.contentSnippet?.substring(0, 200) || '';
           }
