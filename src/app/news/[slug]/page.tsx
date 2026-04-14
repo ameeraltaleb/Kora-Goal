@@ -8,10 +8,11 @@ import type { Metadata } from 'next';
 export const revalidate = 600;
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const decodedSlug = decodeURIComponent(params.slug);
   const { data: article } = await supabase
     .from('news')
     .select('title, summary, image_url, source_name')
-    .eq('slug', params.slug)
+    .eq('slug', decodedSlug)
     .single();
 
   if (!article) return { title: 'الخبر غير موجود' };
@@ -36,10 +37,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function NewsArticlePage({ params }: { params: { slug: string } }) {
+  const decodedSlug = decodeURIComponent(params.slug);
   const { data: article } = await supabase
     .from('news')
     .select('*')
-    .eq('slug', params.slug)
+    .eq('slug', decodedSlug)
     .single();
 
   const { data: related } = await supabase
