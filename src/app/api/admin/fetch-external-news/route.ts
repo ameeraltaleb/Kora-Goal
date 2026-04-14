@@ -43,7 +43,7 @@ export async function GET() {
           continue;
         }
 
-        const itemsToProcess = feed.items.slice(0, 5);
+        const itemsToProcess = feed.items.slice(0, 3); // Reduced to prevent Gemini Rate Limit (429)
 
         for (const item of itemsToProcess) {
           let title = item.title?.substring(0, 150) || '';
@@ -93,7 +93,7 @@ export async function GET() {
           });
 
           totalProcessed++;
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await new Promise(resolve => setTimeout(resolve, 3000)); // 3 seconds delay for API quota
         }
 
         successSources.push(source.name);

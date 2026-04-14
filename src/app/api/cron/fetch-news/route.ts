@@ -64,7 +64,7 @@ export async function GET(request: Request) {
         });
 
         const feed = await parser.parseURL(source.url);
-        const itemsToProcess = feed.items.slice(0, 5);
+        const itemsToProcess = feed.items.slice(0, 2); // Extremely strict reduction to prevent Gemini Rate Limits
 
         for (const item of itemsToProcess) {
           let title = item.title?.substring(0, 150) || '';
@@ -120,8 +120,8 @@ export async function GET(request: Request) {
 
           totalProcessed++;
 
-          // Small delay to avoid Gemini API rate limit
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          // Delay to avoid Gemini API rate limit (429) Free Tier
+          await new Promise(resolve => setTimeout(resolve, 4000));
         }
 
         successSources.push(source.name);
