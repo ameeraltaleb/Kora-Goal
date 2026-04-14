@@ -3,19 +3,23 @@ import Parser from 'rss-parser';
 import { summarizeNews } from '@/lib/gemini';
 import { supabase } from '@/lib/supabase';
 
-const parser = new Parser({
-  headers: {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-    'Accept': 'application/rss+xml, application/xml;q=0.9, */*;q=0.8'
-  }
-});
-
-// مصادر RSS متعددة
-const RSS_SOURCES = [
-  { url: 'https://arabic.sport360.com/feed', name: 'Sport360' },
+// User-Agent rotation to avoid blocking
+const USER_AGENTS = [
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'Googlebot/2.1 (+http://www.google.com/bot.html)',
 ];
 
-// توليد slug من العنوان
+// Multiple RSS sources (fallback if one fails)
+const RSS_SOURCES = [
+  { url: 'https://www.goal.com/feeds/ar/news', name: 'Goal Arabia' },
+  { url: 'https://arabic.rt.com/sport/rss/', name: 'RT Arabic' },
+  { url: 'https://arabic.sport360.com/feed', name: 'Sport360' },
+  { url: 'https://www.filgoal.com/rss/', name: 'FilGoal' },
+];
+
+// Generate slug from title
 function generateSlug(title: string): string {
   return title
     .replace(/[^\u0621-\u064A\u0660-\u06690-9a-zA-Z\s]/g, '')
@@ -24,7 +28,7 @@ function generateSlug(title: string): string {
     + '-' + Date.now().toString(36);
 }
 
-// تصنيف الخبر تلقائياً عبر كلمات مفتاحية
+// Categorize news automatically
 function categorizeNews(title: string, content: string): string {
   const text = `${title} ${content}`.toLowerCase();
   if (/انتقال|صفقة|تعاقد|transfer|ينضم|يغادر|يوقع/.test(text)) return 'transfers';
@@ -37,16 +41,29 @@ export async function GET(request: Request) {
   try {
     let totalProcessed = 0;
     const errors: string[] = [];
+    const successSources: string[] = [];
 
     for (const source of RSS_SOURCES) {
       try {
+        const userAgent = USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
+
+        const parser = new Parser({
+          headers: {
+            'User-Agent': userAgent,
+            'Accept': 'application/rss+xml, application/xml;q=0.9, */*;q=0.8',
+          },
+          timeout: 10000,
+        });
+
         const feed = await parser.parseURL(source.url);
         const itemsToProcess = feed.items.slice(0, 5);
 
         for (const item of itemsToProcess) {
           const title = item.title?.substring(0, 150) || '';
-          
-          // تحقق من عدم التكرار
+
+          if (!title) continue;
+
+          // Check for duplicates
           const { data: existing } = await supabase
             .from('news')
             .select('id')
@@ -55,7 +72,7 @@ export async function GET(request: Request) {
 
           if (existing) continue;
 
-          // تلخيص بالذكاء الاصطناعي
+          // AI summarization
           const rawText = `${item.title}\n\n${item.contentSnippet || item.content || ''}`;
           let summary = '';
           try {
@@ -64,7 +81,7 @@ export async function GET(request: Request) {
             summary = item.contentSnippet?.substring(0, 200) || '';
           }
 
-          // استخراج صورة من المحتوى
+          // Extract image
           let imageUrl = null;
           if (item.enclosure?.url) {
             imageUrl = item.enclosure.url;
@@ -93,9 +110,11 @@ export async function GET(request: Request) {
 
           totalProcessed++;
 
-          // تأخير بسيط لتجنب حد Gemini API
+          // Small delay to avoid Gemini API rate limit
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
+
+        successSources.push(source.name);
       } catch (sourceError: any) {
         errors.push(`${source.name}: ${sourceError.message}`);
       }
@@ -104,7 +123,10 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       processedCount: totalProcessed,
+      successSources,
       errors: errors.length > 0 ? errors : undefined,
+      totalSources: RSS_SOURCES.length,
+      workingSources: successSources.length,
     });
 
   } catch (error: any) {
