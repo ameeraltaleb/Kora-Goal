@@ -9,16 +9,16 @@ if (!supabaseUrl || !supabaseAnonKey) {
     );
 }
 
-// Ensure createClient doesn't crash on empty strings by providing a dummy URL if missing
 export const supabase = createClient(
   supabaseUrl || 'https://placeholder.supabase.co', 
-  supabaseAnonKey || 'placeholder'
-);
+  supabaseAnonKey || 'placeholder',
+  {
     auth: {
         autoRefreshToken: true,
         persistSession: false, // Server-side doesn't need session persistence
     },
-});
+  }
+);
 
 // Helper to check if Supabase is configured
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey &&
