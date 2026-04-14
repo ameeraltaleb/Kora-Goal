@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import MatchSchedule from '@/components/MatchSchedule';
+import MatchCard from '@/components/MatchCard';
 import NewsTicker from '@/components/NewsTicker';
 import styles from './page.module.css';
 import type { Metadata } from 'next';
