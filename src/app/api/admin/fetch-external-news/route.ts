@@ -2,120 +2,106 @@ import { NextResponse } from 'next/server';
 import Parser from 'rss-parser';
 import { summarizeNews } from '@/lib/gemini';
 import { supabase } from '@/lib/supabase';
+import { slugify, cleanHtml } from '@/lib/utils';
 
-// Verified working RSS feeds for Arabic sports news
 const RSS_SOURCES = [
   { url: 'https://www.aljazeera.net/sport/rss', name: 'Al Jazeera Sport' },
   { url: 'https://feeds.bbci.co.uk/arabic/sport/rss.xml', name: 'BBC Arabic Sport' },
   { url: 'https://news.google.com/rss/search?q=كرة+قدم&hl=ar&gl=SA&ceid=SA:ar', name: 'Google News Arabic Football' },
 ];
 
-const GEMINI_KEY = (process.env.GEMINI_API_KEY || '').trim(); // Sanitized
+const GEMINI_KEY = (process.env.GEMINI_API_KEY || '').trim();
 
-// User-Agent rotation
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
 ];
 
 export async function GET() {
   try {
     let totalProcessed = 0;
-    const errors: string[] = [];
-    const successSources: string[] = [];
     const processedItems: any[] = [];
+
+    const parser = new Parser({
+      customFields: {
+        item: [['media:content', 'mediaContent', { keepArray: false }], ['enclosure', 'enclosure']],
+      },
+      headers: { 'User-Agent': USER_AGENTS[0] },
+      timeout: 15000,
+    });
 
     for (const source of RSS_SOURCES) {
       try {
-        const userAgent = USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
-
-        const parser = new Parser({
-          headers: {
-            'User-Agent': userAgent,
-            'Accept': 'application/rss+xml, application/xml;q=0.9, */*;q=0.8',
-          },
-          timeout: 15000,
-        });
-
         const feed = await parser.parseURL(source.url);
-
-        if (!feed.items || feed.items.length === 0) {
-          errors.push(`${source.name}: Empty feed`);
-          continue;
-        }
-
-        const itemsToProcess = feed.items.slice(0, 3); // Reduced to prevent Gemini Rate Limit (429)
+        const itemsToProcess = feed.items.slice(0, 5);
 
         for (const item of itemsToProcess) {
-          let title = item.title?.substring(0, 150) || '';
-          if (!title) continue;
+          const originalTitle = cleanHtml(item.title || '');
+          if (!originalTitle) continue;
 
-          // Check for duplicates
+          // Check duplicate
           const { data: existing } = await supabase
             .from('news')
             .select('id')
-            .eq('title', title)
+            .eq('title', originalTitle)
             .single();
-
           if (existing) continue;
 
-          // AI summarization
-          const rawText = `${item.title}\n\n${item.contentSnippet || item.content || ''}`;
-          let summary = '';
-          try {
-            const aiData = await summarizeNews(rawText);
-            if (aiData.title) title = aiData.title; // Update with AI catchy title
-            summary = aiData.content || '';
-          } catch {
-            summary = item.contentSnippet?.substring(0, 200) || '';
+          let title = originalTitle;
+          let summary = cleanHtml(item.contentSnippet || item.content || '');
+          let isAiGenerated = false;
+
+          // Hybrid AI Logic
+          if (GEMINI_KEY) {
+            try {
+              const rawText = `${item.title}\n\n${item.contentSnippet || item.content || ''}`;
+              const aiData = await summarizeNews(rawText);
+              if (aiData.title) title = aiData.title;
+              if (aiData.content) summary = aiData.content;
+              isAiGenerated = true;
+            } catch (aiErr) {
+              console.warn(`Gemini failed for item, using direct RSS: ${aiErr}`);
+            }
           }
 
-          // Extract image
+          // Image Extraction
           let imageUrl = null;
-          if (item.enclosure?.url) {
-            imageUrl = item.enclosure.url;
-          } else {
+          if (item.enclosure?.url) imageUrl = item.enclosure.url;
+          else if (item.mediaContent?.$.url) imageUrl = item.mediaContent.$.url;
+          else {
             const imgMatch = (item.content || '').match(/<img[^>]+src="([^"]+)"/);
             if (imgMatch) imageUrl = imgMatch[1];
           }
 
-          processedItems.push({ title, summary, source: source.name });
+          // Slug Generation
+          let slug = slugify(title);
+          const { data: slugCheck } = await supabase.from('news').select('id').eq('slug', slug).single();
+          if (slugCheck) {
+            slug = `${slug}-${Math.floor(Math.random() * 1000)}`;
+          }
 
           await supabase.from('news').insert({
             title,
-            summary,
-            content: item.contentSnippet || item.content || '',
+            summary: summary.substring(0, 500),
+            content: cleanHtml(item.content || item.contentSnippet || ''),
             image_url: imageUrl,
             category: 'football',
-            is_ai_generated: true,
+            is_ai_generated: isAiGenerated,
             source_url: item.link || null,
             source_name: source.name,
+            slug,
             created_at: new Date().toISOString(),
           });
 
           totalProcessed++;
-          await new Promise(resolve => setTimeout(resolve, 3000)); // 3 seconds delay for API quota
+          processedItems.push({ title, slug });
+          await new Promise(r => setTimeout(r, 2000));
         }
-
-        successSources.push(source.name);
-      } catch (sourceError: any) {
-        errors.push(`${source.name}: ${sourceError.message}`);
-      }
+      } catch (e) { console.error(`Source error ${source.name}:`, e); }
     }
 
-    return NextResponse.json({
-      success: true,
-      processedCount: totalProcessed,
-      successSources,
-      errors: errors.length > 0 ? errors : undefined,
-      totalSources: RSS_SOURCES.length,
-      workingSources: successSources.length,
-      latestNews: processedItems,
-    });
-
+    return NextResponse.json({ success: true, processedCount: totalProcessed, latest: processedItems });
   } catch (error: any) {
-    console.error('Fetch External News Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
