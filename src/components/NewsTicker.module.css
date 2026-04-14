@@ -40,25 +40,89 @@
   animation: ticker 45s linear infinite;
 }
 
-.newsItem {
-  padding: 0 32px;
+.matchItem {
+  padding: 0 40px;
   font-size: 0.9rem;
   color: var(--text-primary);
   border-left: 1px solid var(--border-color);
-  font-weight: 600;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-decoration: none;
   transition: var(--transition);
 }
 
-.newsItem:hover {
+.matchItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.matchTeams {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team img {
+  border-radius: 50%;
+  background: #fff;
+  padding: 1px;
+}
+
+.score {
+  background: rgba(0,0,0,0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
   color: var(--fb-blue);
-  cursor: pointer;
+  font-family: monospace;
+  font-size: 1rem;
+}
+
+.liveBadge {
+  background: #ff4d4f;
+  color: white;
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: uppercase;
+}
+
+.finalBadge {
+  background: #52c41a;
+  color: white;
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.pulse {
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 1; }
+  70% { transform: scale(3); opacity: 0; }
+  100% { transform: scale(0.95); opacity: 0; }
 }
 
 @keyframes ticker {
   0% {
     transform: translateX(0);
   }
-
   100% {
     transform: translateX(100%);
   }
@@ -70,8 +134,13 @@
     font-size: 0.75rem;
   }
 
-  .newsItem {
+  .matchItem {
     padding: 0 20px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    gap: 8px;
+  }
+  
+  .team span {
+    display: none;
   }
 }
