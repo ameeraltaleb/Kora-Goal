@@ -1,0 +1,28 @@
+name: Fetch News - Every 2 Hours
+
+on:
+  schedule:
+    # Runs every 2 hours at minute 0
+    - cron: '0 */2 * * *'
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  fetch-news:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Fetch News from RSS
+        run: |
+          response=$(curl -s -w "\n%{http_code}" ${{ secrets.DEPLOY_URL }}/api/cron/fetch-news)
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+          
+          echo "Response: $body"
+          echo "Status Code: $http_code"
+          
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Successfully fetched news"
+          else
+            echo "❌ Failed to fetch news (HTTP $http_code)"
+            exit 1
+          fi

@@ -1,0 +1,28 @@
+name: Fetch Matches - Hourly
+
+on:
+  schedule:
+    # Runs every hour at minute 0
+    - cron: '0 * * * *'
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  fetch-matches:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Fetch Matches from Football API
+        run: |
+          response=$(curl -s -w "\n%{http_code}" ${{ secrets.DEPLOY_URL }}/api/cron/fetch-matches)
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+          
+          echo "Response: $body"
+          echo "Status Code: $http_code"
+          
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Successfully fetched matches"
+          else
+            echo "❌ Failed to fetch matches (HTTP $http_code)"
+            exit 1
+          fi

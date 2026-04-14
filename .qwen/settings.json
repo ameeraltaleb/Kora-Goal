@@ -10,7 +10,12 @@
       "Bash(node *)",
       "Bash(del *)",
       "Bash(git init)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git config *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(mkdir *)"
     ]
   },
   "$version": 3

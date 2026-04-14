@@ -1,0 +1,28 @@
+name: Update Match Status - Hourly
+
+on:
+  schedule:
+    # Runs every hour at minute 30
+    - cron: '30 * * * *'
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  update-status:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Update Match Statuses
+        run: |
+          response=$(curl -s -w "\n%{http_code}" ${{ secrets.DEPLOY_URL }}/api/cron/update-status)
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+          
+          echo "Response: $body"
+          echo "Status Code: $http_code"
+          
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Successfully updated match statuses"
+          else
+            echo "❌ Failed to update statuses (HTTP $http_code)"
+            exit 1
+          fi
