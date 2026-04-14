@@ -128,7 +128,7 @@ export default async function LeaguePage({ params }: { params: { slug: string } 
           </div>
           
           {standings.length > 0 ? (
-            <MiniStandingsWidget data={standings} leagueName={league.name} />
+            <MiniStandingsWidget rows={standings} title={league.name} />
           ) : (
             <div className={styles.noData}>جدول الترتيب غير متاح حالياً.</div>
           )}
