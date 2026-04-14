@@ -35,8 +35,11 @@ function generateDefaultServers(homeTeam: string, awayTeam: string) {
 }
 
 export async function GET() {
+  console.log('--- STARTING MANUAL MATCH SYNC ---');
   try {
+    console.log('Step 1: Checking API Keys...');
     if (!API_KEY) {
+      console.error('ERROR: FOOTBALL_API_KEY is missing');
       return NextResponse.json({ error: 'FOOTBALL_API_KEY not configured' }, { status: 500 });
     }
 
@@ -44,6 +47,7 @@ export async function GET() {
     const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     const competitionsParam = LEAGUES.join(',');
 
+    console.log(`Step 2: Fetching from API (${competitionsParam}) for dates ${today} to ${tomorrow}`);
     const response = await fetch(
       `${API_BASE}/matches?dateFrom=${today}&dateTo=${tomorrow}&competitions=${competitionsParam}`,
       { headers: { 'X-Auth-Token': API_KEY } }
@@ -51,11 +55,14 @@ export async function GET() {
 
     if (!response.ok) {
       const text = await response.text();
+      console.error(`Step 2 FAILED: API Status ${response.status}`, text);
       return NextResponse.json({ error: `API Error: ${text}` }, { status: response.status });
     }
 
     const data = await response.json();
     const matches = data.matches || [];
+    console.log(`Step 3: Found ${matches.length} matches to process`);
+    
     let processed = 0;
 
     for (const match of matches) {
@@ -67,37 +74,43 @@ export async function GET() {
       const awayScore = match.score?.fullTime?.away ?? match.score?.halfTime?.away ?? 0;
       const score = status === 'upcoming' ? '0 - 0' : `${homeScore} - ${awayScore}`;
 
-      const { data: existing } = await supabase
-        .from('matches')
-        .select('id')
-        .eq('external_id', externalId)
-        .single();
+      try {
+        const { data: existing } = await supabase
+          .from('matches')
+          .select('id')
+          .eq('external_id', externalId)
+          .single();
 
-      if (existing) {
-        await supabase.from('matches').update({
-          status,
-          score,
-          match_time: match.utcDate,
-        }).eq('external_id', externalId);
-      } else {
-        await supabase.from('matches').insert({
-          home_team: homeTeam,
-          home_logo: match.homeTeam?.crest || null,
-          away_team: awayTeam,
-          away_logo: match.awayTeam?.crest || null,
-          match_time: match.utcDate,
-          status,
-          score,
-          tournament: LEAGUE_NAMES[match.competition?.code || ''] || match.competition?.name || '',
-          servers: generateDefaultServers(homeTeam, awayTeam),
-          external_id: externalId,
-        });
+        if (existing) {
+          await supabase.from('matches').update({
+            status,
+            score,
+            match_time: match.utcDate,
+          }).eq('external_id', externalId);
+        } else {
+          await supabase.from('matches').insert({
+            home_team: homeTeam,
+            home_logo: match.homeTeam?.crest || null,
+            away_team: awayTeam,
+            away_logo: match.awayTeam?.crest || null,
+            match_time: match.utcDate,
+            status,
+            score,
+            tournament: LEAGUE_NAMES[match.competition?.code || ''] || match.competition?.name || '',
+            servers: generateDefaultServers(homeTeam, awayTeam),
+            external_id: externalId,
+          });
+        }
+        processed++;
+      } catch (dbError: any) {
+        console.error(`DB Error for match ${externalId}:`, dbError.message);
       }
-      processed++;
     }
 
+    console.log(`--- FINISHED MANUAL MATCH SYNC: Processed ${processed} items ---`);
     return NextResponse.json({ success: true, processedCount: processed });
   } catch (error: any) {
+    console.error('CRITICAL ERROR in Manual Match Sync:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -24,14 +24,17 @@ export default function SyncButton({ type = 'news' }: SyncButtonProps) {
 
     try {
       const res = await fetch(endpoint);
-      const data = await res.json();
-      if (data.success) {
-        alert(`تم مزامنة ال${label} بنجاح! تم معالجة ${data.processedCount} عنصر.`);
+      const data = await res.json().catch(() => ({ error: 'فشل في قراءة استجابة السيرفر (ليست JSON)' }));
+      
+      if (res.ok && data.success) {
+        alert(`✅ تم مزامنة ال${label} بنجاح! تم معالجة ${data.processedCount} عنصر.`);
       } else {
-        alert(`خطأ في المزامنة: ${data.error}`);
+        const errorMsg = data.error || `خطأ غير معروف (Status: ${res.status})`;
+        alert(`❌ فشل في المزامنة: ${errorMsg}`);
+        console.error('Sync Error:', data);
       }
     } catch (err) {
-      alert("فشل الاتصال بخادم المزامنة.");
+      alert("🚫 فشل الاتصال بخادم المزامنة. تأكد من أن الموقع يعمل.");
     } finally {
       setLoading(false);
     }
