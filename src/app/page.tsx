@@ -21,12 +21,13 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function Home() {
-  const [newsRes, matchesRes, plStandings, pdStandings, saStandings] = await Promise.all([
+  const [newsRes, matchesRes, plStandings, pdStandings, saStandings, bl1Standings] = await Promise.all([
     supabase.from('news').select('*').order('created_at', { ascending: false }).limit(6),
     supabase.from('matches').select('*').order('match_time', { ascending: true }).limit(10),
     supabase.from('standings').select('*').eq('league_code', 'PL').order('position', { ascending: true }).limit(5),
     supabase.from('standings').select('*').eq('league_code', 'PD').order('position', { ascending: true }).limit(5),
     supabase.from('standings').select('*').eq('league_code', 'SA').order('position', { ascending: true }).limit(5),
+    supabase.from('standings').select('*').eq('league_code', 'BL1').order('position', { ascending: true }).limit(5),
   ]);
 
   const news = newsRes.data || [];
@@ -36,6 +37,7 @@ export default async function Home() {
     PL: plStandings.data || [],
     PD: pdStandings.data || [],
     SA: saStandings.data || [],
+    BL1: bl1Standings.data || [],
   };
 
   const liveMatches = allMatches.filter((m: any) => m.status === 'live');
@@ -260,25 +262,34 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Trending News Widget */}
+            {/* Bundesliga */}
             <div className={styles.widgetCard}>
               <div className={styles.widgetHeader}>
-                <span className={styles.widgetTitle}>🔥 الأخبار الرائجة</span>
+                <span className={styles.widgetTitle}>الدوري الألماني</span>
               </div>
               <div className={styles.widgetBody}>
-                {trendingNews.length > 0 ? trendingNews.map((item: any, i: number) => (
-                  <Link href={item.slug ? `/news/${item.slug}` : '#'} key={i} className={styles.trendItem} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <div className={styles.trendNumber}>{i + 1}</div>
-                    <div className={styles.trendContent}>
-                      <span className={styles.trendTitle}>{item.title}</span>
-                      <span className={styles.trendTime}>
-                        {item.created_at ? new Date(item.created_at).toLocaleDateString('ar', { day: 'numeric', month: 'short' }) : ''}
-                      </span>
-                    </div>
-                  </Link>
-                )) : (
-                  <p className={styles.emptyMsg}>لا توجد أخبار حالياً</p>
-                )}
+                <table className={styles.miniTable}>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th style={{ textAlign: 'right' }}>الفريق</th>
+                      <th>لعب</th>
+                      <th>نقاط</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {standingsData.BL1.length > 0 ? standingsData.BL1.map((row: any) => (
+                      <tr key={row.id}>
+                        <td className={styles.posCell}>{row.position}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 600 }}>{row.team}</td>
+                        <td>{row.mp}</td>
+                        <td className={styles.pointsCell}>{row.pts}</td>
+                      </tr>
+                    )) : (
+                      <tr><td colSpan={4} className={styles.emptyMsg}>سيتم التحديث قريباً</td></tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

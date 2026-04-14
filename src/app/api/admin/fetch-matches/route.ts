@@ -4,13 +4,20 @@ import { supabase } from '@/lib/supabase';
 const API_BASE = 'https://api.football-data.org/v4';
 const API_KEY = (process.env.FOOTBALL_API_KEY || '').trim();
 
-const LEAGUES = ['PL', 'PD', 'BL1', 'SA', 'CL'];
+const LEAGUES = ['PL', 'PD', 'BL1', 'SA', 'FL1', 'CL', 'DED', 'PPL', 'BSA', 'ELC', 'EC', 'CLI'];
 const LEAGUE_NAMES: Record<string, string> = {
   PL: 'الدوري الإنجليزي',
   PD: 'الدوري الإسباني',
   BL1: 'الدوري الألماني',
   SA: 'الدوري الإيطالي',
+  FL1: 'الدوري الفرنسي',
   CL: 'دوري أبطال أوروبا',
+  DED: 'الدوري الهولندي',
+  PPL: 'الدوري البرتغالي',
+  BSA: 'الدوري البرازيلي',
+  ELC: 'دوري الدرجة الأولى الإنجليزي',
+  EC: 'بطولة أمم أوروبا',
+  CLI: 'كوبا ليبرتادوريس',
 };
 
 function mapStatus(apiStatus: string): 'live' | 'upcoming' | 'finished' {

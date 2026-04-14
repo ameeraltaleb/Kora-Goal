@@ -19,10 +19,18 @@ export const metadata: Metadata = {
 export const revalidate = 300; // 5 minutes cache
 
 const LEAGUES = [
-  { code: 'PL', name: 'الدوري الإنجليزي' },
-  { code: 'PD', name: 'الدوري الإسباني' },
-  { code: 'BL1', name: 'الدوري الألماني' },
-  { code: 'SA', name: 'الدوري الإيطالي' },
+  { code: 'PL', name: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 الإنجليزي' },
+  { code: 'PD', name: '🇪🇸 الإسباني' },
+  { code: 'SA', name: '🇮🇹 الإيطالي' },
+  { code: 'BL1', name: '🇩🇪 الألماني' },
+  { code: 'FL1', name: '🇫🇷 الفرنسي' },
+  { code: 'CL', name: '🇪🇺 دوري الأبطال' },
+  { code: 'DED', name: '🇳🇱 الهولندي' },
+  { code: 'PPL', name: '🇵🇹 البرتغالي' },
+  { code: 'BSA', name: '🇧🇷 البرازيلي' },
+  { code: 'ELC', name: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 الدرجة الأولى' },
+  { code: 'EC', name: '🏆 اليورو' },
+  { code: 'CLI', name: '🌎 ليبرتادوريس' },
 ];
 
 export default async function Standings({

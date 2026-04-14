@@ -125,6 +125,10 @@ export default function AdminDashboard() {
         <header className={styles.topHeader}>
           <h1>لوحة التحكم المتقدمة</h1>
           <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'var(--fb-blue)', padding: '5px 15px', borderRadius: '8px' }}>
+              <span style={{ fontSize: '0.8rem', color: 'white' }}>الكل:</span>
+              <SyncButton type="master" />
+            </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.05)', padding: '5px 10px', borderRadius: '8px' }}>
               <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>الأخبار:</span>
               <SyncButton type="news" />
@@ -136,6 +140,10 @@ export default function AdminDashboard() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.05)', padding: '5px 10px', borderRadius: '8px' }}>
               <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>الترتيب:</span>
               <SyncButton type="standings" />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.05)', padding: '5px 10px', borderRadius: '8px' }}>
+              <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>الهدافين:</span>
+              <SyncButton type="scorers" />
             </div>
             <button onClick={fetchDashboardData} className={styles.refreshBtn} title="تحديث الإحصائيات">↻</button>
           </div>

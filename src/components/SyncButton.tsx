@@ -4,7 +4,7 @@ import { useState } from 'react';
 import styles from './Header.module.css';
 
 interface SyncButtonProps {
-  type?: 'news' | 'matches' | 'standings';
+  type?: 'news' | 'matches' | 'standings' | 'scorers' | 'master';
 }
 
 export default function SyncButton({ type = 'news' }: SyncButtonProps) {
@@ -12,14 +12,48 @@ export default function SyncButton({ type = 'news' }: SyncButtonProps) {
 
   const handleSync = async () => {
     setLoading(true);
+    
+    // Helper to perform single fetch
+    const doFetch = async (endpoint: string, label: string) => {
+      try {
+        const res = await fetch(endpoint);
+        const data = await res.json().catch(() => ({ error: 'فشل في قراءة استجابة السيرفر' }));
+        return { ok: res.ok && data.success, count: data.processedCount || 0, error: data.error };
+      } catch (err) {
+        return { ok: false, error: 'فشل الاتصال بخادم المزامنة' };
+      }
+    };
+
+    if (type === 'master') {
+      alert("⚠️ ستبدأ المزامنة الشاملة الآن. قد تستغرق ما يصل إلى دقيقتين لتجنب الحظر. يرجى الانتظار...");
+      
+      const results = [];
+      results.push(await doFetch('/api/admin/fetch-matches', 'المباريات'));
+      await new Promise(r => setTimeout(r, 2000));
+      results.push(await doFetch('/api/admin/fetch-standings', 'الترتيب'));
+      await new Promise(r => setTimeout(r, 2000));
+      results.push(await doFetch('/api/admin/fetch-external-news', 'الأخبار'));
+      
+      const successCount = results.filter(r => r.ok).length;
+      if (successCount === results.length) {
+        alert("✅ تمت المزامنة الشاملة بنجاح لكافة الأقسام!");
+      } else {
+        alert(`⚠️ اكتملت المزامنة مع وجود بعض الأخطاء (${successCount}/${results.length} نجحوا).`);
+      }
+      setLoading(false);
+      return;
+    }
+
     const endpoint = 
       type === 'matches' ? '/api/admin/fetch-matches' : 
       type === 'standings' ? '/api/admin/fetch-standings' : 
+      type === 'scorers' ? '/api/admin/fetch-scorers' : 
       '/api/admin/fetch-external-news';
       
     const label = 
       type === 'matches' ? 'مباريات' : 
       type === 'standings' ? 'جدول الترتيب' : 
+      type === 'scorers' ? 'الهدافين' : 
       'أخبار';
 
     try {

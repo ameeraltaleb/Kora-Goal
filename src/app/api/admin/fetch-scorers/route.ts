@@ -11,12 +11,6 @@ const LEAGUES = [
   { code: 'SA', name: 'الدوري الإيطالي' },
   { code: 'FL1', name: 'الدوري الفرنسي' },
   { code: 'CL', name: 'دوري أبطال أوروبا' },
-  { code: 'DED', name: 'الدوري الهولندي' },
-  { code: 'PPL', name: 'الدوري البرتغالي' },
-  { code: 'BSA', name: 'الدوري البرازيلي' },
-  { code: 'ELC', name: 'دوري الدرجة الأولى الإنجليزي' },
-  { code: 'EC', name: 'بطولة أمم أوروبا' },
-  { code: 'CLI', name: 'كوبا ليبرتادوريس' },
 ];
 
 export async function GET() {
@@ -27,41 +21,43 @@ export async function GET() {
 
     let totalProcessed = 0;
 
+    // First, clear existing scorers to keep it fresh (optional, or just upsert)
+    // await supabase.from('scorers').delete().neq('id', 0);
+
     for (const league of LEAGUES) {
+      console.log(`Fetching scorers for ${league.name}...`);
       const response = await fetch(
-        `${API_BASE}/competitions/${league.code}/standings`,
+        `${API_BASE}/competitions/${league.code}/scorers`,
         { headers: { 'X-Auth-Token': API_KEY } }
       );
 
       if (!response.ok) continue;
 
       const data = await response.json();
-      const table = data.standings?.[0]?.table || [];
+      const scorers = data.scorers || [];
 
-      for (const row of table) {
-        await supabase.from('standings').upsert({
+      for (const item of scorers) {
+        await supabase.from('scorers').upsert({
           league_code: league.code,
           league_name: league.name,
-          team: row.team?.shortName || row.team?.name || '',
-          team_logo: row.team?.crest || null,
-          position: row.position,
-          mp: row.playedGames || 0,
-          w: row.won || 0,
-          d: row.draw || 0,
-          l: row.lost || 0,
-          gf: row.goalsFor || 0,
-          ga: row.goalsAgainst || 0,
-          gd: row.goalDifference || 0,
-          pts: row.points || 0,
+          player_name: item.player?.name || 'لاعب',
+          team_name: item.team?.shortName || item.team?.name || '',
+          team_logo: item.team?.crest || null,
+          goals: item.goals || 0,
+          assists: item.assists || 0,
+          played_matches: item.playedMatches || 0,
           updated_at: new Date().toISOString(),
-        }, { onConflict: 'league_code,team' });
+        }, { onConflict: 'league_code,player_name' });
         totalProcessed++;
       }
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Rate limiting: 10 requests per minute
+      await new Promise(resolve => setTimeout(resolve, 6000)); 
     }
 
     return NextResponse.json({ success: true, processedCount: totalProcessed });
   } catch (error: any) {
+    console.error('Fetch Scorers Error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

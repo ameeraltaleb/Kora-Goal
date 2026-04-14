@@ -23,7 +23,8 @@ export default function Header() {
 
         <nav className={styles.nav}>
           <Link href="/" className={styles.navLink}>الرئيسية</Link>
-          <Link href="/standings" className={styles.navLink}>جدول الترتيب</Link>
+          <Link href="/standings" className={styles.navLink}>الترتيب</Link>
+          <Link href="/scorers" className={styles.navLink}>الهدافين</Link>
           <Link href="/news" className={styles.navLink}>الأخبار</Link>
         </nav>
 
