@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin', '/api/'],
       },
     ],
-    sitemap: 'https://koragoal.com/sitemap.xml',
+    sitemap: 'https://kora-goal.vercel.app/sitemap.xml',
   };
 }

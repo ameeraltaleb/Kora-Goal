@@ -1,8 +1,8 @@
-import Link from 'next/link';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import NewsTicker from '@/components/NewsTicker';
 import Breadcrumb from '@/components/Breadcrumb';
+import { NewsArticleJsonLd } from '@/components/JsonLd';
 import styles from './page.module.css';
 import type { Metadata } from 'next';
 
@@ -21,6 +21,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     title: `${article.title} | كورة غول`,
     description: article.summary?.substring(0, 160) || '',
+    alternates: {
+      canonical: `https://kora-goal.vercel.app/news/${decodedSlug}`,
+    },
     openGraph: {
       title: article.title,
       description: article.summary?.substring(0, 160) || '',
@@ -77,6 +80,15 @@ export default async function NewsArticlePage({ params }: { params: { slug: stri
   return (
     <main className={styles.container}>
       <NewsTicker />
+      <NewsArticleJsonLd 
+        title={article.title}
+        description={article.summary || article.title}
+        publishedDate={new Date(article.created_at).toISOString()}
+        modifiedDate={new Date(article.created_at).toISOString()}
+        url={shareUrl}
+        image={article.image_url}
+        author="كورة غول"
+      />
 
       <article className={styles.articleWrapper}>
         <Breadcrumb items={[

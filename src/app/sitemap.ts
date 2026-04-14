@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase';
 import type { MetadataRoute } from 'next';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://koragoal.com';
+  const baseUrl = 'https://kora-goal.vercel.app';
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [

@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase';
 import NewsTicker from '@/components/NewsTicker';
 import VideoPlayer from '@/components/VideoPlayer';
 import SidePlaylist from '@/components/SidePlaylist';
+import { MatchJsonLd } from '@/components/JsonLd';
 import styles from './page.module.css';
 import type { Metadata, ResolvingMetadata } from 'next';
 
@@ -29,7 +30,10 @@ export async function generateMetadata(
   return {
     title,
     description,
-    keywords: [match.home_team, match.away_team, 'بث مباشر', match.tournament, 'مباراة'],
+    keywords: [match.home_team, match.away_team, 'بث مباشر', match.tournament || '', 'مباراة', 'اليوم'],
+    alternates: {
+      canonical: `https://kora-goal.vercel.app/match/${params.id}`,
+    },
     openGraph: {
       title,
       description,
@@ -91,6 +95,14 @@ export default async function MatchDetails({ params }: { params: { id: string } 
   return (
     <main className={styles.container}>
       <NewsTicker />
+      <MatchJsonLd 
+        homeTeam={match.home_team}
+        awayTeam={match.away_team}
+        tournament={match.tournament}
+        status={match.status}
+        score={match.score}
+        url={`https://kora-goal.vercel.app/match/${match.id}`}
+      />
 
       <div className={styles.content}>
         <div className={styles.mainGrid}>

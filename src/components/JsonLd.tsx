@@ -8,7 +8,7 @@ interface SportsSiteJsonLdProps {
 export function SportsSiteJsonLd({ name = 'كورة غول', url = 'https://kora-goal.vercel.app' }: SportsSiteJsonLdProps) {
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "SportsActivityInformation",
+    "@type": "WebSite",
     "name": name,
     "url": url,
     "description": "منصة كورة غول - بث مباشر لمباريات كرة القدم العالمية والعربية",
@@ -25,6 +25,14 @@ export function SportsSiteJsonLd({ name = 'كورة غول', url = 'https://kora
         "@type": "ImageObject",
         "url": `${url}/logo.png`
       }
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${url}/news?q={search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
     }
   };
 
