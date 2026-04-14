@@ -1,7 +1,9 @@
 import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
+import Link from 'next/link';
 import NewsTicker from '@/components/NewsTicker';
 import styles from './page.module.css';
+import type { Metadata } from 'next';
 
 const LEAGUES = [
   { code: 'PL', name: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 الإنجليزي' },
@@ -11,7 +13,16 @@ const LEAGUES = [
   { code: 'FL1', name: '🇫🇷 الفرنسي' },
 ];
 
-export const revalidate = 600;
+export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ searchParams }: { searchParams: { league?: string } }): Promise<Metadata> {
+  const code = searchParams.league || 'PL';
+  const league = LEAGUES.find(l => l.code === code);
+  return {
+    title: `هدافي ${league?.name || 'الدوري'} | كورة غول`,
+    description: `قائمة هدافي ${league?.name || 'الدوري'}، الأهداف، والتمريرات الحاسمة محدثة لحظياً.`,
+  };
+}
 
 export default async function ScorersPage({
   searchParams,
@@ -38,13 +49,13 @@ export default async function ScorersPage({
           <h1 className={styles.title}>🎯 هدافي الدوريات الكبرى</h1>
           <div className={styles.tabs}>
             {LEAGUES.map((league) => (
-              <a
+              <Link
                 key={league.code}
                 href={`/scorers?league=${league.code}`}
                 className={activeLeague === league.code ? styles.tabActive : styles.tab}
               >
                 {league.name}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
