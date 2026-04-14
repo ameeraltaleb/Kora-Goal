@@ -3,18 +3,18 @@ import Parser from 'rss-parser';
 import { summarizeNews } from '@/lib/gemini';
 import { supabase } from '@/lib/supabase';
 
+// Verified working RSS feeds for Arabic sports news
+const RSS_SOURCES = [
+  { url: 'https://www.aljazeera.net/sport/rss', name: 'Al Jazeera Sport' },
+  { url: 'https://feeds.bbci.co.uk/arabic/sport/rss.xml', name: 'BBC Arabic Sport' },
+  { url: 'https://news.google.com/rss/search?q=كرة+قدم&hl=ar&gl=SA&ceid=SA:ar', name: 'Google News Arabic Football' },
+];
+
 // User-Agent rotation
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-];
-
-// Multiple RSS sources (fallback)
-const RSS_SOURCES = [
-  { url: 'https://www.goal.com/feeds/ar/news', name: 'Goal Arabia' },
-  { url: 'https://arabic.rt.com/sport/rss/', name: 'RT Arabic' },
-  { url: 'https://www.filgoal.com/rss/', name: 'FilGoal' },
 ];
 
 export async function GET() {
@@ -33,11 +33,17 @@ export async function GET() {
             'User-Agent': userAgent,
             'Accept': 'application/rss+xml, application/xml;q=0.9, */*;q=0.8',
           },
-          timeout: 10000,
+          timeout: 15000,
         });
 
         const feed = await parser.parseURL(source.url);
-        const itemsToProcess = feed.items.slice(0, 3);
+
+        if (!feed.items || feed.items.length === 0) {
+          errors.push(`${source.name}: Empty feed`);
+          continue;
+        }
+
+        const itemsToProcess = feed.items.slice(0, 5);
 
         for (const item of itemsToProcess) {
           const title = item.title?.substring(0, 150) || '';
@@ -70,7 +76,7 @@ export async function GET() {
             if (imgMatch) imageUrl = imgMatch[1];
           }
 
-          processedItems.push({ title, summary });
+          processedItems.push({ title, summary, source: source.name });
 
           await supabase.from('news').insert({
             title,

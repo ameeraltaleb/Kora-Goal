@@ -11,12 +11,11 @@ const USER_AGENTS = [
   'Googlebot/2.1 (+http://www.google.com/bot.html)',
 ];
 
-// Multiple RSS sources (fallback if one fails)
+// Verified working RSS feeds for Arabic sports news
 const RSS_SOURCES = [
-  { url: 'https://www.goal.com/feeds/ar/news', name: 'Goal Arabia' },
-  { url: 'https://arabic.rt.com/sport/rss/', name: 'RT Arabic' },
-  { url: 'https://arabic.sport360.com/feed', name: 'Sport360' },
-  { url: 'https://www.filgoal.com/rss/', name: 'FilGoal' },
+  { url: 'https://www.aljazeera.net/sport/rss', name: 'Al Jazeera Sport' },
+  { url: 'https://feeds.bbci.co.uk/arabic/sport/rss.xml', name: 'BBC Arabic Sport' },
+  { url: 'https://news.google.com/rss/search?q=كرة+قدم&hl=ar&gl=SA&ceid=SA:ar', name: 'Google News Arabic Football' },
 ];
 
 // Generate slug from title
