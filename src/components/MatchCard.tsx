@@ -12,7 +12,7 @@ interface MatchCardProps {
 export default function MatchCard({ match }: MatchCardProps) {
   const { id, home_team, home_logo, away_team, away_logo, match_time, status, score, tournament, channel, commentator } = match;
 
-  const displayTime = match_time 
+  const displayTime = match_time
     ? new Date(match_time).toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' })
     : '';
 
@@ -38,7 +38,7 @@ export default function MatchCard({ match }: MatchCardProps) {
               {match.league_logo && <Image src={match.league_logo} alt="" width={16} height={16} unoptimized />}
               <span className={styles.tournamentName}>{tournament}</span>
             </div>
-            
+
             <div className={styles.scoreBox}>
               {status === 'live' ? (
                 <>
@@ -50,7 +50,7 @@ export default function MatchCard({ match }: MatchCardProps) {
                 </>
               ) : status === 'finished' ? (
                 <>
-                  <span className={styles.finalScore}>{score}</span>
+                  <span className={styles.finalScore}>{score || '0 - 0'}</span>
                   <span className={styles.finalBadge}>انتهت</span>
                 </>
               ) : (

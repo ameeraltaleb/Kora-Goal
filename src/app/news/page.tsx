@@ -20,11 +20,15 @@ export const metadata: Metadata = {
 export const revalidate = 120;
 
 export default async function NewsPage() {
-  const { data: news } = await supabase
+  const { data: news, error } = await supabase
     .from('news')
     .select('*')
     .order('created_at', { ascending: false })
     .limit(20);
+
+  if (error) {
+    console.error('Error fetching news:', error);
+  }
 
   const articles = news || [];
 

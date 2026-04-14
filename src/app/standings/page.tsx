@@ -22,8 +22,9 @@ const LEAGUES = [
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata({ searchParams }: { searchParams: { league?: string } }): Promise<Metadata> {
-  const code = searchParams.league || 'PL';
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ league?: string }> | { league?: string } }): Promise<Metadata> {
+  const resolvedParams = 'then' in searchParams ? await searchParams : searchParams;
+  const code = resolvedParams.league || 'PL';
   const league = LEAGUES.find(l => l.code === code);
   return {
     title: `ترتيب ${league?.name || 'الدوري'} | كورة غول`,
@@ -34,15 +35,20 @@ export async function generateMetadata({ searchParams }: { searchParams: { leagu
 export default async function Standings({
   searchParams,
 }: {
-  searchParams: { league?: string };
+  searchParams: Promise<{ league?: string }> | { league?: string };
 }) {
-  const activeLeague = searchParams?.league || 'PL';
+  const resolvedParams = 'then' in searchParams ? await searchParams : searchParams;
+  const activeLeague = resolvedParams?.league || 'PL';
 
-  const { data: standings } = await supabase
+  const { data: standings, error } = await supabase
     .from('standings')
     .select('*')
     .eq('league_code', activeLeague)
     .order('position', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching standings:', error);
+  }
 
   const rows = standings || [];
 

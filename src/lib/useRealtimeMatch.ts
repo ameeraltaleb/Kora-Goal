@@ -28,8 +28,8 @@ export function useRealtimeMatch(matchId: number | undefined, initialData: Match
         (payload) => {
           console.log('Realtime Update Received:', payload);
           setData({
-            status: payload.new.status,
-            score: payload.new.score,
+            status: payload.new.status || 'upcoming',
+            score: payload.new.score || undefined,
           });
         }
       )

@@ -360,7 +360,7 @@ export default function AdminDashboard() {
                       <tr key={msg.id}>
                         <td>{msg.name}</td>
                         <td>{msg.email}</td>
-                        <td className={styles.messageCell}>{msg.message.substring(0, 50)}...</td>
+                        <td className={styles.messageCell}>{msg.message ? msg.message.substring(0, 50) : '(لا يوجد نص)'}...</td>
                         <td>
                           <span className={msg.is_read ? styles.readBadge : styles.unreadBadge}>
                             {msg.is_read ? 'مقروء' : 'غير مقروء'}

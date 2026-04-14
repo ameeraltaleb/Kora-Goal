@@ -31,9 +31,16 @@ export default async function Home() {
     supabase.from('standings').select('*').eq('league_code', 'BL1').order('position', { ascending: true }).limit(5),
   ]);
 
+  if (newsRes.error) console.error('Error fetching news:', newsRes.error);
+  if (matchesRes.error) console.error('Error fetching matches:', matchesRes.error);
+  if (plStandings.error) console.error('Error fetching PL standings:', plStandings.error);
+  if (pdStandings.error) console.error('Error fetching PD standings:', pdStandings.error);
+  if (saStandings.error) console.error('Error fetching SA standings:', saStandings.error);
+  if (bl1Standings.error) console.error('Error fetching BL1 standings:', bl1Standings.error);
+
   const news = newsRes.data || [];
   const allMatches = matchesRes.data || [];
-  
+
   const standingsData = {
     PL: plStandings.data || [],
     PD: pdStandings.data || [],
@@ -147,7 +154,7 @@ export default async function Home() {
             <h2 className={styles.sectionTitle}>🏆 ترتيب الدوريات الكبرى</h2>
             <Link href="/standings" className={styles.viewAllLink}>التفاصيل الكاملة ←</Link>
           </div>
-          
+
           <div className={styles.widgetsGrid}>
             {/* Premier League */}
             <div className={styles.widgetCard}>

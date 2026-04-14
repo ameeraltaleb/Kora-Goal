@@ -9,13 +9,13 @@ export const revalidate = 600;
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const decodedSlug = decodeURIComponent(params.slug);
-  const { data: article } = await supabase
+  const { data: article, error } = await supabase
     .from('news')
     .select('title, summary, image_url, source_name')
     .eq('slug', decodedSlug)
     .single();
 
-  if (!article) return { title: 'الخبر غير موجود' };
+  if (error || !article) return { title: 'الخبر غير موجود' };
 
   return {
     title: `${article.title} | كورة غول`,
@@ -38,18 +38,26 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 export default async function NewsArticlePage({ params }: { params: { slug: string } }) {
   const decodedSlug = decodeURIComponent(params.slug);
-  const { data: article } = await supabase
+  const { data: article, error: articleError } = await supabase
     .from('news')
     .select('*')
     .eq('slug', decodedSlug)
     .single();
 
-  const { data: related } = await supabase
+  if (articleError) {
+    console.error('Error fetching article:', articleError);
+  }
+
+  const { data: related, error: relatedError } = await supabase
     .from('news')
     .select('id, title, slug, image_url, created_at')
     .neq('slug', params.slug)
     .order('created_at', { ascending: false })
     .limit(3);
+
+  if (relatedError) {
+    console.error('Error fetching related news:', relatedError);
+  }
 
   if (!article) {
     return (
@@ -68,7 +76,7 @@ export default async function NewsArticlePage({ params }: { params: { slug: stri
   return (
     <main className={styles.container}>
       <NewsTicker />
-      
+
       <article className={styles.articleWrapper}>
         <nav className={styles.breadcrumb}>
           <Link href="/">الرئيسية</Link> &raquo;

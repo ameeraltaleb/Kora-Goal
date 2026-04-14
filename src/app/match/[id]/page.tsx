@@ -10,13 +10,13 @@ export async function generateMetadata(
   { params }: { params: { id: string } },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const { data: match } = await supabase
+  const { data: match, error } = await supabase
     .from('matches')
     .select('home_team, away_team, tournament, status, score')
     .eq('id', params.id)
     .single();
 
-  if (!match) {
+  if (error || !match) {
     return {
       title: 'المباراة غير موجودة',
       robots: { index: false },
@@ -43,19 +43,27 @@ export const revalidate = 30; // 30s cache for live updates
 
 export default async function MatchDetails({ params }: { params: { id: string } }) {
   // جلب المباراة الحالية
-  const { data: match } = await supabase
+  const { data: match, error: matchError } = await supabase
     .from('matches')
     .select('*')
     .eq('id', params.id)
     .single();
 
+  if (matchError) {
+    console.error('Error fetching match:', matchError);
+  }
+
   // جلب المباريات الأخرى للقائمة الجانبية
-  const { data: otherMatches } = await supabase
+  const { data: otherMatches, error: otherError } = await supabase
     .from('matches')
     .select('id, home_team, away_team, tournament, home_logo, score, status')
     .neq('id', params.id)
     .order('match_time', { ascending: true })
     .limit(5);
+
+  if (otherError) {
+    console.error('Error fetching other matches:', otherError);
+  }
 
   if (!match) {
     return (

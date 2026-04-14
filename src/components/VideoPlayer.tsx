@@ -13,13 +13,27 @@ export default function VideoPlayer({ sources, onAutoSwitch }: VideoPlayerProps)
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const hlsRef = useRef<Hls | null>(null);
 
   const currentSource = sources[currentIndex]?.url || '';
   const isM3u8 = currentSource.includes('.m3u8');
+  const hasSources = sources.length > 0 && currentSource;
+
+  if (!hasSources) {
+    return (
+      <div style={{
+        width: '100%', aspectRatio: '16/9', background: 'var(--bg-card)',
+        border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px'
+      }}>
+        <span style={{ fontSize: '3rem' }}>📡</span>
+        <p style={{ color: 'var(--text-secondary)' }}>لا توجد مصادر للبث حالياً</p>
+      </div>
+    );
+  }
 
   // Switch Server Logic
   const handleSwitch = (index: number) => {
@@ -109,7 +123,7 @@ export default function VideoPlayer({ sources, onAutoSwitch }: VideoPlayerProps)
             <p>جاري تحضير البث المباشر...</p>
           </div>
         )}
-        
+
         {isError && (
           <div className={styles.errorOverlay}>
             <p>عذراً، هذا السيرفر لا يعمل حالياً.</p>
@@ -151,7 +165,7 @@ export default function VideoPlayer({ sources, onAutoSwitch }: VideoPlayerProps)
             </button>
           ))}
         </div>
-        
+
         <button className={styles.reportBtn} onClick={reportError}>
           ⚠️ أبلغ عن مشكلة
         </button>

@@ -7,7 +7,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 class TaskQueue {
   private concurrency: number;
   private running: number;
-  private queue: (() => void)[];
+  private queue: (() => Promise<any>)[];
 
   constructor(concurrency: number) {
     this.concurrency = concurrency;
@@ -46,9 +46,9 @@ const geminiQueue = new TaskQueue(1);
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // 2. Exponential Backoff & Main Logic
-async function _summarizeNewsWithRetry(prompt: string, maxRetries = 3): Promise<{title: string, content: string}> {
+async function _summarizeNewsWithRetry(prompt: string, maxRetries = 3): Promise<{ title: string, content: string }> {
   let attempt = 0;
-  
+
   while (attempt < maxRetries) {
     try {
       const result = await model.generateContent(prompt);
@@ -58,7 +58,7 @@ async function _summarizeNewsWithRetry(prompt: string, maxRetries = 3): Promise<
     } catch (error: any) {
       attempt++;
       console.error(`AI Error in summarizeNews (Attempt ${attempt}/${maxRetries}):`, error.message);
-      
+
       if (attempt >= maxRetries) {
         console.error("استنفدنا كل المحاولات، نتجاوز الذكاء الاصطناعي.");
         throw error;
@@ -66,7 +66,7 @@ async function _summarizeNewsWithRetry(prompt: string, maxRetries = 3): Promise<
 
       // Check for HTTP 429 and parse exact 'retryDelay' from Google
       let waitTime = 5000 * Math.pow(2, attempt); // Base exponential backoff (10s, 20s...)
-      
+
       const errorMessage = error.message || "";
       if (errorMessage.includes("429") || errorMessage.includes("Quota exceeded")) {
         const match = errorMessage.match(/retry in ([\d\.]+)s/);
@@ -75,15 +75,15 @@ async function _summarizeNewsWithRetry(prompt: string, maxRetries = 3): Promise<
         }
       }
 
-      console.warn(`⏳ ننتظر ${Math.round(waitTime/1000)} ثانية قبل إعادة المحاولة لمعالجة الخبر...`);
+      console.warn(`⏳ ننتظر ${Math.round(waitTime / 1000)} ثانية قبل إعادة المحاولة لمعالجة الخبر...`);
       await delay(waitTime);
     }
   }
-  
+
   throw new Error("فشل الذكاء الاصطناعي في الاستجابة نهائياً.");
 }
 
-export async function summarizeNews(rawContent: string): Promise<{title: string, content: string}> {
+export async function summarizeNews(rawContent: string): Promise<{ title: string, content: string }> {
   const prompt = `
     أنت خبير في الصحافة الرياضية ومنصة "كورة غول". 
     استخرج عنواناً جذاباً (يبدأ بـ "عاجل" أو "رسمياً" إذا لزم الأمر)، وقم بتلخيص المحتوى التالي في فقرة واحدة مشوقة جداً باللغة العربية.

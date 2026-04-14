@@ -21,13 +21,13 @@ export default async function NewsTicker() {
       <div className={styles.tickerWrapper}>
         <div className={styles.tickerContent}>
           {tickerItems.length > 0 ? tickerItems.concat(tickerItems).map((match, index) => (
-            <Link key={index} href={`/match/${match.id}`} className={styles.matchItem}>
+            <Link key={`${match.id}-${index}`} href={`/match/${match.id}`} className={styles.matchItem}>
               {match.status === 'live' ? (
                 <span className={styles.liveBadge}><span className={styles.pulse}></span> مباشر</span>
               ) : (
                 <span className={styles.finalBadge}>انتهت</span>
               )}
-              
+
               <div className={styles.matchTeams}>
                 <div className={styles.team}>
                   {match.home_logo && <Image src={match.home_logo} alt="" width={16} height={16} unoptimized />}

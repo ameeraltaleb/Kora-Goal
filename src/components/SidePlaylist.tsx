@@ -20,7 +20,9 @@ export default function SidePlaylist({ items, activeId }: SidePlaylistProps) {
           <Link key={item.id} href={`/match/${item.id}`}>
             <div className={`${styles.item} ${activeId === item.id ? styles.active : ''}`}>
               <div className={styles.logoAndTitle}>
-                <Image src={item.logo} alt={item.title} width={30} height={30} className={styles.logo} />
+                {item.logo && (
+                  <Image src={item.logo} alt={item.title} width={30} height={30} className={styles.logo} />
+                )}
                 <div className={styles.text}>
                   <span className={styles.itemTitle}>{item.title}</span>
                   <span className={styles.itemSubtitle}>{item.subtitle}</span>
