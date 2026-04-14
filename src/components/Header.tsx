@@ -8,6 +8,7 @@ import styles from './Header.module.css';
 
 const NAV_LINKS = [
   { href: '/', label: 'الرئيسية' },
+  { href: '/live', label: 'بث مباشر' },
   { href: '/standings', label: 'الترتيب' },
   { href: '/scorers', label: 'الهدافين' },
   { href: '/news', label: 'الأخبار' },
