@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './MatchSchedule.module.css';
-import MatchCard from './MatchCard';
+import MatchCard from '@/components/MatchCard';
 import type { MatchData } from '@/lib/types';
 
 type TabType = 'today' | 'tomorrow' | 'yesterday';
